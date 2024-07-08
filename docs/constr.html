@@ -4,19 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>4 Emulators | Workshop 1: calibrating a deterministic model</title>
+  <title>5 Emulators | Workshop 1: calibrating a deterministic model</title>
   <meta name="description" content="An interactive introduction to the hmer package" />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.40 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="4 Emulators | Workshop 1: calibrating a deterministic model" />
+  <meta property="og:title" content="5 Emulators | Workshop 1: calibrating a deterministic model" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="An interactive introduction to the hmer package" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 Emulators | Workshop 1: calibrating a deterministic model" />
+  <meta name="twitter:title" content="5 Emulators | Workshop 1: calibrating a deterministic model" />
   
   <meta name="twitter:description" content="An interactive introduction to the hmer package" />
   
@@ -32,7 +31,6 @@
   
 <link rel="prev" href="wave0---parameter-ranges-targets-and-design-points.html"/>
 <link rel="next" href="implausibility.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -50,8 +48,9 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script language="javascript"> 
     function toggle(id) {
         var ele = document.getElementById("toggleText" + id);
@@ -96,7 +95,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -130,11 +129,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 code span.al { color: #ef2929; } /* Alert */
 code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #c4a000; } /* Attribute */
+code span.at { color: #204a87; } /* Attribute */
 code span.bn { color: #0000cf; } /* BaseN */
 code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4e9a06; } /* Char */
-code span.cn { color: #000000; } /* Constant */
+code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #8f5902; font-style: italic; } /* Comment */
 code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
 code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
@@ -143,14 +142,14 @@ code span.dv { color: #0000cf; } /* DecVal */
 code span.er { color: #a40000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #0000cf; } /* Float */
-code span.fu { color: #000000; } /* Function */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
 code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
 code span.ot { color: #8f5902; } /* Other */
 code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code span.sc { color: #000000; } /* SpecialChar */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
 code span.ss { color: #4e9a06; } /* SpecialString */
 code span.st { color: #4e9a06; } /* String */
 code span.va { color: #000000; } /* Variable */
@@ -159,10 +158,15 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging div.csl-entry {
   margin-left:2em;
@@ -195,19 +199,23 @@ div.csl-indent {
 
 <ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Objectives</a></li>
-<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to the model</a></li>
-<li class="chapter" data-level="3" data-path="wave0---parameter-ranges-targets-and-design-points.html"><a href="wave0---parameter-ranges-targets-and-design-points.html"><i class="fa fa-check"></i><b>3</b> ‘wave0’ - parameter ranges, targets and design points</a></li>
-<li class="chapter" data-level="4" data-path="constr.html"><a href="constr.html"><i class="fa fa-check"></i><b>4</b> Emulators</a>
+<li class="chapter" data-level="2" data-path="an-overview-of-history-matching-with-emulation-and-hmer.html"><a href="an-overview-of-history-matching-with-emulation-and-hmer.html"><i class="fa fa-check"></i><b>2</b> An overview of history matching with emulation and hmer</a></li>
+<li class="chapter" data-level="3" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>3</b> Introduction to the model</a></li>
+<li class="chapter" data-level="4" data-path="wave0---parameter-ranges-targets-and-design-points.html"><a href="wave0---parameter-ranges-targets-and-design-points.html"><i class="fa fa-check"></i><b>4</b> ‘wave0’ - parameter ranges, targets and design points</a></li>
+<li class="chapter" data-level="5" data-path="constr.html"><a href="constr.html"><i class="fa fa-check"></i><b>5</b> Emulators</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="constr.html"><a href="constr.html#a-brief-recap-on-emulators"><i class="fa fa-check"></i><b>4.1</b> A brief recap on emulators</a></li>
-<li class="chapter" data-level="4.2" data-path="constr.html"><a href="constr.html#training-emulators"><i class="fa fa-check"></i><b>4.2</b> Training emulators</a></li>
+<li class="chapter" data-level="5.1" data-path="constr.html"><a href="constr.html#what-is-an-emulator"><i class="fa fa-check"></i><b>5.1</b> What is an emulator?</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="constr.html"><a href="constr.html#picking-priors"><i class="fa fa-check"></i><b>5.1.1</b> Picking Priors</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="implausibility.html"><a href="implausibility.html"><i class="fa fa-check"></i><b>5</b> Implausibility</a></li>
-<li class="chapter" data-level="6" data-path="emulator-diagnostics.html"><a href="emulator-diagnostics.html"><i class="fa fa-check"></i><b>6</b> Emulator diagnostics</a></li>
-<li class="chapter" data-level="7" data-path="proposing-new-points.html"><a href="proposing-new-points.html"><i class="fa fa-check"></i><b>7</b> Proposing new points</a></li>
-<li class="chapter" data-level="8" data-path="customise-the-first-wave.html"><a href="customise-the-first-wave.html"><i class="fa fa-check"></i><b>8</b> Customise the first wave</a></li>
-<li class="chapter" data-level="9" data-path="second-wave.html"><a href="second-wave.html"><i class="fa fa-check"></i><b>9</b> Second wave</a></li>
-<li class="chapter" data-level="10" data-path="visual.html"><a href="visual.html"><i class="fa fa-check"></i><b>10</b> Visualisations of non-implausible space by wave</a></li>
+<li class="chapter" data-level="5.2" data-path="constr.html"><a href="constr.html#training-emulators"><i class="fa fa-check"></i><b>5.2</b> Training emulators</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="implausibility.html"><a href="implausibility.html"><i class="fa fa-check"></i><b>6</b> Implausibility</a></li>
+<li class="chapter" data-level="7" data-path="emulator-diagnostics.html"><a href="emulator-diagnostics.html"><i class="fa fa-check"></i><b>7</b> Emulator diagnostics</a></li>
+<li class="chapter" data-level="8" data-path="proposing-new-points.html"><a href="proposing-new-points.html"><i class="fa fa-check"></i><b>8</b> Proposing new points</a></li>
+<li class="chapter" data-level="9" data-path="customise-the-first-wave.html"><a href="customise-the-first-wave.html"><i class="fa fa-check"></i><b>9</b> Customise the first wave</a></li>
+<li class="chapter" data-level="10" data-path="second-wave.html"><a href="second-wave.html"><i class="fa fa-check"></i><b>10</b> Second wave</a></li>
+<li class="chapter" data-level="11" data-path="visual.html"><a href="visual.html"><i class="fa fa-check"></i><b>11</b> Visualisations of non-implausible space by wave</a></li>
 </ul>
 
       </nav>
@@ -225,82 +233,102 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="constr" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Emulators</h1>
+<div id="constr" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Emulators<a href="constr.html#constr" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>A video presentation of this section can be found <a href="https://youtu.be/6qg5-qQ5j54">here</a>.</p>
 <p>This section will start with a short recap on the structure of an emulator. We will then train the first wave of emulators and explore them through various visualisations. Note that this section is a bit technical: while it is important to grasp the overall picture of how emulators work, it is not crucial that you understand each detail given in here.</p>
-<p>Let us start by splitting <code>wave0</code> in two parts: the training set, on which we will train the emulators, and a validation set, which will be used to do diagnostics of the emulators.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="constr.html#cb13-1" aria-hidden="true" tabindex="-1"></a>t_sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(wave0), <span class="dv">90</span>)</span>
-<span id="cb13-2"><a href="constr.html#cb13-2" aria-hidden="true" tabindex="-1"></a>training <span class="ot">&lt;-</span> wave0[t_sample,]</span>
-<span id="cb13-3"><a href="constr.html#cb13-3" aria-hidden="true" tabindex="-1"></a>validation <span class="ot">&lt;-</span> wave0[<span class="sc">-</span>t_sample,]</span></code></pre></div>
-<div id="a-brief-recap-on-emulators" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> A brief recap on emulators</h2>
-<p>Before building emulators, let us quickly remind ourselves what an emulator is and how it is structured. Note that a more detailed discussion about the structure of an emulator can be found in Tutorial 2 (Section 3, and Appendix A and B), in <span class="citation"><a href="#ref-bower2010galaxy" role="doc-biblioref">Bower, Goldstein, and Vernon</a> (<a href="#ref-bower2010galaxy" role="doc-biblioref">2010</a>)</span> and in <span class="citation"><a href="#ref-vernon2018bayesian" role="doc-biblioref">Vernon et al.</a> (<a href="#ref-vernon2018bayesian" role="doc-biblioref">2018</a>)</span>.</p>
-<p>An <a href="https://en.wikipedia.org/wiki/Emulator">emulator</a> is a way of representing our
-<span class="abbr" title=""><abbr title="In Bayesian statistics, probability expresses a degree of belief in an event. Such belief can be based either on prior knowledge or on personal beliefs about the event. 
-">beliefs</abbr></span>
-about the behaviour of a function whose output is unknown. In this workshop what is unknown is the behaviour of our SEIRS model at unevaluated input locations. Given a training dataset, i.e. a set of model runs, we can train an emulator and use it to get the expectation and variance for a model output at any parameter set, without the need to run the model at the chosen set. We think of the expectation as the prediction provided by the emulator at the chosen parameter set, and we think of the variance as the uncertainty associated to that prediction.</p>
+<p>For later use, we start by splitting <code>wave0</code> in two parts: the training set (the first half), on which we will train the emulators, and a validation set (the second half), which will be used to do diagnostics of the emulators.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="constr.html#cb14-1" tabindex="-1"></a>training <span class="ot">&lt;-</span> wave0[<span class="dv">1</span><span class="sc">:</span><span class="dv">90</span>,]</span>
+<span id="cb14-2"><a href="constr.html#cb14-2" tabindex="-1"></a>validation <span class="ot">&lt;-</span> wave0[<span class="dv">91</span><span class="sc">:</span><span class="dv">180</span>,]</span></code></pre></div>
+<div id="what-is-an-emulator" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> What is an emulator?<a href="constr.html#what-is-an-emulator" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>An emulator, for our purposes, is a statistical surrogate to a complex simulator. More detailed discussions can be found in <span class="citation">Bower, Goldstein, and Vernon (<a href="#ref-bower2010galaxy">2010</a>)</span> and <span class="citation">Vernon et al. (<a href="#ref-vernon2018bayesian">2018</a>)</span>, but we will motivate our discussion with a simple example. At its heart, the problem that emulation solves can be framed as follows:</p>
+<ul>
+<li>We have a model from which we can obtain outputs <span class="math inline">\(f(x)\)</span> at a finite number of points in input space <span class="math inline">\(x\)</span>.</li>
+<li>We want to make meaningful statements about the whole range of <span class="math inline">\(x\)</span> values <strong>without</strong> running the model lots of times (for example, because the model is slow to run), by estimating the output at points we haven’t evaluated.</li>
+<li>We also want to know how good our estimates are at these unseen points, so that we don’t make overconfident statements about the model behaviour.</li>
+</ul>
+<p>In this context, an emulator is a representation of the model output that can predict the model output (the <strong>expected</strong> value) at unseen points, and tell us how unsure we should be about those predictions (the <strong>uncertainty</strong>). Let’s see this with a simple example before moving on to our toy model. Suppose we have a ‘model’ that takes a one-dimensional input, <span class="math inline">\(x\)</span> and returns a single output <span class="math inline">\(f(x)\)</span>. For this example, we know the exact form of the output:</p>
+<p><span class="math display">\[f(x) = 2x+3x\sin\left(\frac{5\pi(x-0.1)}{0.4}\right).\]</span></p>
+<p>However, we are going to pretend that the model takes a long time to evaluate points, and that we can only obtain ten evaluations in a reasonable space of time: we only have access to values of <span class="math inline">\(f(x)\)</span> for <span class="math inline">\(x=0.05,0.1,\dots,0.5\)</span>.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:onedex"></span>
+<img src="images/1dExample.png" alt="Our one-dimensional function. The grey line represents the function; the black points are the only points we are allowed to consider when building the emulator." width="60%" />
+<p class="caption">
+Figure 5.1: Our one-dimensional function. The grey line represents the function; the black points are the only points we are allowed to consider when building the emulator.
+</p>
+</div>
 <p>The general structure of a univariate emulator is as follows:
-<span class="math display">\[f(x) = g(x)^T \xi + u(x),\]</span>
-where <span class="math inline">\(g(x)^T \xi\)</span> is a regression term and <span class="math inline">\(u(x)\)</span> is a <a href="https://en.wikipedia.org/wiki/Stationary_process#Weak_or_wide-sense_stationarity">weakly stationary process</a> with mean zero. The role of the regression term is to mimic the global behaviour of the model output, while <span class="math inline">\(u(x)\)</span> represents localised deviations of the output from this global behaviour near to <span class="math inline">\(x\)</span>.</p>
-<p>The regression term is specified by:</p>
+<span class="math display">\[f(x) = h(x)^T \xi + u(x) := \text{global part} + \text{local part}.\]</span>
+The first term is the “global” or “regression” part, which characterises the response of <span class="math inline">\(f(x)\)</span> to <span class="math inline">\(x\)</span> across the space. It splits into two pieces:</p>
 <ul>
-<li><p>a vector of functions of the parameters <span class="math inline">\(g(x)\)</span> which determine the shape and complexity of the regression
-<span class="abbr" title=""><abbr title="A hypersurface is a mathematical object that generalizes the concept of surface from the three-dimensional space to hyperspaces, i.e. spaces of dimension higher than three.
-">hypersurface</abbr></span>
-we fit to the training data. For example, if <span class="math inline">\(x\)</span> is one dimensional, i.e. we have just one parameter, setting <span class="math inline">\(g(x)=(1,x)\)</span> corresponds to fitting a straight line to the training data. Similarly, setting <span class="math inline">\(g(x)=(1,x,x^2)\)</span> corresponds to fitting a parabola to the training data. Fig <a href="constr.html#fig:regresresid">4.1</a> shows a one-dimensional example with a quadratic global behaviour: the model output to emulate is in black, while the best fitting parabola is in red.</p></li>
-<li><p>a vector of regression coefficients <span class="math inline">\(\xi\)</span>. In the one dimensional case for example, if we set <span class="math inline">\(g(x)=(1,x)\)</span>, then <span class="math inline">\(\xi=(\xi_0,\xi_1)\)</span>, where <span class="math inline">\(\xi_0\)</span> is the <span class="math inline">\(y\)</span>-intercept and <span class="math inline">\(\xi_1\)</span> is the gradient of the straight line fitted to the training data.</p></li>
+<li>a vector of functions <span class="math inline">\(h(x)\)</span> of the inputs <span class="math inline">\(x\)</span>, which determine the shape and complexity of the regression. If we expect a linear response, we would have <span class="math inline">\(h(x) = (1, x)\)</span>; if we had a quadratic response, we instead have <span class="math inline">\((1, x, x^2)\)</span>. Note that we always include a constant term. These functions are considered “known”; they will not change during the process once chosen.</li>
+<li>a corresponding vector of regression coefficients <span class="math inline">\(\xi\)</span>, of the same length as <span class="math inline">\(h(x)\)</span>. We think of these as random quantities, and merely specify what we expect them to be (and in principle what our uncertainty is about them): our specifications will therefore correspond to <span class="math inline">\(\mathbb{E}[\xi]\)</span> and <span class="math inline">\(\text{Var}[\xi]\)</span>.</li>
 </ul>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:regresresid"></span>
-<img src="regres_resid_plot.png" alt="Regression term and residuals in one dimensional example" width="100%" />
+<p>Of course, a regression surface is unlikely to perfectly capture the behaviour of our model. We couple it to a “local” part which characterises the small-scale variability away from the global behaviour. We represent this by a <a href="https://en.wikipedia.org/wiki/Stationary_process#Weak_or_wide-sense_stationarity">weakly stationary process</a>, often with expectation <span class="math inline">\(0\)</span> (as we don’t expect that the deviations will be systematically high or low). We can define this using a statement about the covariance at two points <span class="math inline">\(x\)</span> and <span class="math inline">\(x^\prime\)</span></p>
+<p><span class="math display">\[\text{Cov}[u(x), u(x^\prime)] = \sigma^2 c(x-x^\prime).\]</span>
+The overall variance, <span class="math inline">\(\sigma^2\)</span>, represents the variability of the local deviations from the global surface. The <strong>correlation function</strong>, <span class="math inline">\(c(x-x^\prime)\)</span>, depends only on the distance between the two points and we expect it to have the following properties:</p>
+<ul>
+<li>If the distance <span class="math inline">\(x-x^\prime\)</span> becomes large, the covariance should become small; equivalently, <span class="math inline">\(c(x-x^\prime)\to0\)</span> as <span class="math inline">\(x-x^\prime\to\infty\)</span>.</li>
+<li>If the distance between <span class="math inline">\(x\)</span> and <span class="math inline">\(x^\prime\)</span> goes to <span class="math inline">\(0\)</span>, we should have perfect correlation: <span class="math inline">\(c(0)=1\)</span>.</li>
+</ul>
+<p>There are many correlation functions one could use: here we will use the exponential-squared correlation function</p>
+<p><span class="math display">\[c(x-x^{\prime}) :=  \exp\left(\frac{-\sum_{i}(x_{i}-x_{i}^{\prime})^2}{\theta^2}\right)\]</span></p>
+<p>which obeys the relations we want: the parameter <span class="math inline">\(\theta\)</span> is a <strong>correlation length</strong>. The larger <span class="math inline">\(\theta\)</span> is, the further apart <span class="math inline">\(x\)</span> and <span class="math inline">\(x^\prime\)</span> must be before the correlation function substantially decreases. In general, a larger <span class="math inline">\(\theta\)</span> results in a “smoother” function.</p>
+<p>For our emulator of the function <span class="math inline">\(f(x)\)</span> we need to decide on these pieces in turn.</p>
+<ul>
+<li>We choose the most simple regression surface: just a constant function, so <span class="math inline">\(g(x)=[1]\)</span>. We could choose a linear term, too, but let’s assume that all we know about the model is that the output is ‘wiggly’.</li>
+<li>The corresponding vector of regression coefficients, <span class="math inline">\(\xi\)</span>. Since we only have one regression function, we only need one coefficient. Let’s just take the mean of our function values, so <span class="math inline">\(\xi \approx 0.55\)</span>.</li>
+<li>The correlation function we take to be the exponential-squared: the function looks quite smooth.</li>
+<li>The ‘hyper-parameters’ of the correlation function are trickier to determine. The overall variance <span class="math inline">\(\sigma^2\)</span> can be estimated from the sum of squared distances away from our regression surface (equivalently, the squared residuals), and we see that <span class="math inline">\(\sigma^2 \approx 0.32\)</span>. The correlation length we must decide: taking <span class="math inline">\(\theta = 1/3\)</span> implies that we don’t expect the smaller points to have an impact on the larger ones, though central points have an influence that extends both sides.</li>
+</ul>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:onedemfirst"></span>
+<img src="images/1dExampleEmUnadjust.png" alt="The predictions from our emulator with prior specifications as above. Red lines indicate 2-sigma bounds on the predictions (black line)." width="60%" />
 <p class="caption">
-Figure 4.1: Regression term and residuals in one dimensional example
+Figure 5.2: The predictions from our emulator with prior specifications as above. Red lines indicate 2-sigma bounds on the predictions (black line).
 </p>
 </div>
-<p>In general, and especially when dealing with complex models, we cannot expect the regression hypersurface to perfectly explain the behaviour of the output. For this reason it is necessary to account for the local deviations of the output from the regression hypersurface. These local deviations, also referred to as residuals, are shown in blue in Fig <a href="constr.html#fig:regresresid">4.1</a>. When the parameter space is one-dimensional, they indicate how far the regression term is from the model output at each point. Since residuals are unknown, we treat them as random variables: for each parameter <span class="math inline">\(x\)</span>, we then have a random variable <span class="math inline">\(u(x)\)</span> representing the residual at <span class="math inline">\(x\)</span>. In the <a href="https://cran.r-project.org/web/packages/hmer/index.html">hmer</a> package we assume this collection of random variables <span class="math inline">\(u(x)\)</span> to be a <a href="https://en.wikipedia.org/wiki/Stationary_process#Weak_or_wide-sense_stationarity">weakly stationary process</a> (similar to a <a href="https://en.wikipedia.org/wiki/Gaussian_process">Gaussian process</a>), with mean zero. Informally this means the following:</p>
-<ul>
-<li><p>for each parameter set <span class="math inline">\(x\)</span>, we consider the residual <span class="math inline">\(u(x)\)</span> as a random variable with mean zero. Note that the mean is assumed to be zero, since, even if we expect to see local deviations, we do not expect the output to be systematically above (or below) the regression hypersurface;</p></li>
-<li><p>given any pair of parameter sets <span class="math inline">\((x,x&#39;)\)</span>, the pair <span class="math inline">\((u(x),u(x&#39;))\)</span> is a vector of two random variables with mean <span class="math inline">\((0,0)\)</span> and such that the covariance of <span class="math inline">\(u(x)\)</span> and <span class="math inline">\(u(x&#39;)\)</span> only depends on the difference <span class="math inline">\(x-x&#39;\)</span>.</p></li>
-</ul>
-<p>In the case of a Gaussian process, we further assume that <span class="math inline">\(u(x)\)</span> is normally distributed and that <span class="math inline">\((u(x),u(x&#39;))\)</span> is a multivariate normal variable.</p>
-<p>To fully describe a weakly stationary process <span class="math inline">\(u(x)\)</span> we need to define the covariance structure, i.e. we need to say how correlated the residuals at <span class="math inline">\(x\)</span> and <span class="math inline">\(x&#39;\)</span> are, for any pair <span class="math inline">\((x,x&#39;)\)</span>. When using Gaussian processes, as we do in this workshop, a commonly adopted covariance structure is given by</p>
-<p><span class="math display">\[\text{Cov}(u(x), u(x&#39;))= \sigma^2  c(x,x^{\prime}) \]</span>
-where <span class="math inline">\(c\)</span> is the square-exponential correlation function</p>
-<p><span class="math display">\[c(x,x^{\prime}) :=  \exp\left(\frac{-\sum\limits_{i}(x_{i}-x_{i}^{\prime})^2}{\theta^2}\right)\]</span></p>
-<p>where <span class="math inline">\(x_i\)</span> is the ith-component of the parameter set <span class="math inline">\(x.\)</span> This covariance structure is the default option in the <a href="https://cran.r-project.org/web/packages/hmer/index.html">hmer</a> package, even though other structures are available.</p>
-<p>Let us look at the various terms in this covariance structure:</p>
-<ul>
-<li><span class="math inline">\(\sigma^2\)</span> is the <strong>emulator variance</strong>, i.e the variance of <span class="math inline">\(u(x)\)</span>, for all parameter sets <span class="math inline">\(x\)</span>. The value of <span class="math inline">\(\sigma\)</span> reflects how far from the regression hypersurface the model output can be. The larger the value of <span class="math inline">\(\sigma\)</span>, the farthest the model output can be from the regression hypersurface. In particular, larger values of <span class="math inline">\(\sigma\)</span> correspond to more uncertain emulators. For example, Fig. <a href="constr.html#fig:regresresid">4.1</a> was generated with a <span class="math inline">\(\sigma\)</span> of <span class="math inline">\(0.3\)</span>. A higher <span class="math inline">\(\sigma\)</span> of <span class="math inline">\(1\)</span>, would create wider residuals, as in the plot below:</li>
-</ul>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-15"></span>
-<img src="regres_resid_plot_highsigma.png" alt="Regression term and residuals in one dimensional example, with higher $\sigma$" width="100%" />
+<p>This doesn’t look terribly useful…our predictions are quite useless, don’t track the function, and our uncertainty is large. However, this is only our <strong>prior</strong> specification; the emulators consist of random quantities and we can use a modified version of Bayes theorem (see <span class="citation">Goldstein and Wooff (<a href="#ref-goldstein2007bayes">2007</a>)</span> for more details) to update this with respect to data. We have our <span class="math inline">\(10\)</span> data points from the model: let’s adjust the emulator predictions with respect to this data and see what the predictions look like now.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:onedemsecond"></span>
+<img src="images/1dExampleEmAdjust.png" alt="Predictions from the data-adjusted emulator above. Red lines indicate 2-sigma bounds on the predictions (black line), and the location of training points are shown." width="60%" />
 <p class="caption">
-Figure 4.2: Regression term and residuals in one dimensional example, with higher <span class="math inline">\(\sigma\)</span>
+Figure 5.3: Predictions from the data-adjusted emulator above. Red lines indicate 2-sigma bounds on the predictions (black line), and the location of training points are shown.
 </p>
 </div>
-<ul>
-<li><span class="math inline">\(\theta\)</span> is the <strong>correlation length</strong> of the process. For a given pair <span class="math inline">\((x,x&#39;)\)</span>, the larger <span class="math inline">\(\theta\)</span> is, the larger is the covariance between <span class="math inline">\(u(x)\)</span> and <span class="math inline">\(u(x&#39;)\)</span>. This means that the size of <span class="math inline">\(\theta\)</span> determines how close two parameter sets must be in order for the corresponding residuals to be non-negligibly correlated. Informally, we can think of <span class="math inline">\(\theta\)</span> in the following way: if the distance of two parameters sets is no more than <span class="math inline">\(\theta\)</span>, then their residuals will be well correlated. In particular, a larger <span class="math inline">\(\theta\)</span> results in a smoother (less wiggly) emulator. In the one dimensional example in Fig. <a href="constr.html#fig:regresresid">4.1</a>, a <span class="math inline">\(\theta\)</span> of <span class="math inline">\(1\)</span> was used. A value of <span class="math inline">\(\theta\)</span> equal to <span class="math inline">\(0.4\)</span> would result in less smooth residuals:</li>
-</ul>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-16"></span>
-<img src="regres_resid_plot_lowtheta.png" alt="Regression term and residuals in one dimensional example, with lower $\theta$" width="100%" />
-<p class="caption">
-Figure 4.3: Regression term and residuals in one dimensional example, with lower <span class="math inline">\(\theta\)</span>
-</p>
+<p>The structure of the emulator has been updated with respect to the data, and now the local <span class="math inline">\(u(x)\)</span> term pulls our emulator predictions up or down relative to how close the point <span class="math inline">\(x\)</span> is to a ‘known’ training point. The emulator prediction now follows the actual function very closely across the full range, and the uncertainty of the predictions has massively decreased. The only places where the emulator prediction and the model output don’t match well are at the edges, but the emulator uncertainty is still large in these regions representing the fact that the emulator does not ‘expect’ to be good in those regions. Somehow, just <span class="math inline">\(10\)</span> points has been sufficient to capture the complicated behaviour of this function; even with very vague prior statements.</p>
+<div id="picking-priors" class="section level3 hasAnchor" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> Picking Priors<a href="constr.html#picking-priors" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We could easily decide on ‘sensible’ prior statements for this 1d example, since we can visualise the data points easily. However, this is not the case for actual applications: how could we decide on prior parameters in more complicated examples?</p>
+<p>The good news is that we don’t have to: hmer has a function for that. The <code>emulator_from_data</code> function, which we will use in detail below, requires only the data from the model runs, the name of the output(s) we want to emulate, and the ranges of the input(s): given this, it will determine the regression surface, the coefficients, and pick sensible values for the overall uncertainty <span class="math inline">\(\sigma^2\)</span> and correlation length <span class="math inline">\(\theta\)</span>. It then performs the update with respect to data and gives us the final emulator.</p>
+<div class="panel panel-default">
+<div class="panel-heading">
+Task
 </div>
-<p>Choosing values for <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\theta\)</span> corresponds to making a judgment about how far we expect the output to be from the regression hypersurface (<span class="math inline">\(\sigma\)</span>) and about its smoothness (<span class="math inline">\(\theta\)</span>). While the <a href="https://cran.r-project.org/web/packages/hmer/index.html">hmer</a> package, and in particular the function <code>emulator_from_data</code>, selects values of <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\theta\)</span> for us based on the provided training data, we will see in this workshop how we can intervene to customise the choice of these hyperparameters and the benefits that this operation brings.</p>
+<div class="panel-body">
+<p>If you want to persuade yourself that no magic has been performed here, the dataset used is generated below along with code to create an emulator. Note that <code>emulator_from_data</code> does not ‘see’ the function itself: only the ten evaluated points.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="constr.html#cb15-1" tabindex="-1"></a>func <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">2</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>x<span class="sc">*</span><span class="fu">sin</span>(<span class="dv">5</span><span class="sc">*</span>pi<span class="sc">*</span>(x<span class="fl">-0.1</span>)<span class="sc">/</span><span class="fl">0.4</span>)</span>
+<span id="cb15-2"><a href="constr.html#cb15-2" tabindex="-1"></a>pts <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb15-3"><a href="constr.html#cb15-3" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="fu">sapply</span>(pts, func)</span>
+<span id="cb15-4"><a href="constr.html#cb15-4" tabindex="-1"></a>test_em <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(<span class="at">input_data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> pts, <span class="at">f =</span> output),</span>
+<span id="cb15-5"><a href="constr.html#cb15-5" tabindex="-1"></a>                              <span class="at">output_names =</span> <span class="fu">c</span>(<span class="st">&#39;f&#39;</span>), </span>
+<span id="cb15-6"><a href="constr.html#cb15-6" tabindex="-1"></a>                              <span class="at">ranges =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>)))</span></code></pre></div>
+As we go through the rest of this workshop, see if you can generate a plot similar to the one above!
 </div>
-<div id="training-emulators" class="section level2" number="4.2">
-<h2><span class="header-section-number">4.2</span> Training emulators</h2>
-<p>We are now ready to train the emulators using the <code>emulator_from_data</code> function, which needs at least the following data: the training set, the names of the targets we want to emulate and the ranges of the parameters. By default, <code>emulator_from_data</code> assumes a square-exponential correlation function and finds suitable values for the variance <span class="math inline">\(\sigma\)</span> and the correlation length <span class="math inline">\(\theta\)</span> of the process <span class="math inline">\(u(x)\)</span>. In this workshop, in order to shorten the time needed to train emulators, we pass one more argument to <code>emulator_from_data</code>, setting the correlation lengths to be <span class="math inline">\(0.55\)</span> for all emulators. Normally, the argument <code>c_lengths</code> will not be needed, since the correlation lengths are determined by the <code>emulator_from_data</code> function itself.</p>
-<p><infobutton id="displayTextunnamed-chunk-17" onclick="javascript:toggle('unnamed-chunk-17');">Show: How was the value 0.55 chosen?</infobutton></p>
-<div id="toggleTextunnamed-chunk-17" style="display: none">
+</div>
+</div>
+</div>
+<div id="training-emulators" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Training emulators<a href="constr.html#training-emulators" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We will now train the emulators using the <code>emulator_from_data</code> function on our actual model, which needs at least the following data: the training set, the names of the targets we want to emulate and the ranges of the parameters. By default, <code>emulator_from_data</code> assumes a square-exponential correlation function and finds suitable values for the variance <span class="math inline">\(\sigma\)</span> and the correlation length <span class="math inline">\(\theta\)</span> of the process <span class="math inline">\(u(x)\)</span>. In this workshop, in order to shorten the time needed to train emulators, we pass one more argument to <code>emulator_from_data</code>, setting the correlation lengths to be <span class="math inline">\(0.55\)</span> for all emulators. Normally, the argument <code>specified_priors</code> will not be needed, since the correlation lengths are determined by the <code>emulator_from_data</code> function itself.</p>
+<p><infobutton id="displayTextunnamed-chunk-19" onclick="javascript:toggle('unnamed-chunk-19');">Show: How was the value 0.55 chosen?</infobutton></p>
+<div id="toggleTextunnamed-chunk-19" style="display: none">
 <div class="panel panel-default">
 <div class="panel-body">
 The value <span class="math inline">\(0.55\)</span> was chosen using the Durham heuristics, which states that the correlation length should lie in the interval <span class="math inline">\([1/(n+1), 2/(n+1)]\)</span> where <span class="math inline">\(n\)</span> is the degree of the fitted surface. In our case <span class="math inline">\(n\)</span> is 2 and therefore the correlation length should be in <span class="math inline">\([1/3,2/3]\)</span>. We chose <span class="math inline">\(0.55\)</span>, a value little above the midpoint of this interval, to represent our belief that the model is smooth (and therefore correlations between neighboring points should be appreciable).
 </div>
 </div>
 </div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="constr.html#cb14-1" aria-hidden="true" tabindex="-1"></a>ems_wave1 <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(training, <span class="fu">names</span>(targets), ranges, </span>
-<span id="cb14-2"><a href="constr.html#cb14-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">c_lengths=</span> <span class="fu">rep</span>(<span class="fl">0.55</span>,<span class="fu">length</span>(targets)))</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="constr.html#cb16-1" tabindex="-1"></a>ems_wave1 <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(training, <span class="fu">names</span>(targets), ranges, </span>
+<span id="cb16-2"><a href="constr.html#cb16-2" tabindex="-1"></a>                                <span class="at">specified_priors =</span> <span class="fu">list</span>(<span class="at">hyper_p =</span> <span class="fu">rep</span>(<span class="fl">0.55</span>, <span class="fu">length</span>(targets))))</span></code></pre></div>
 <pre><code>## I25 
 ## I40 
 ## I100 
@@ -325,32 +353,32 @@ The value <span class="math inline">\(0.55\)</span> was chosen using the Durham 
 ## R200 
 ## R300 
 ## R350</code></pre>
-<p>In <code>ems_wave1</code> we have information about all emulators. Let us take a look at the emulator of the number of recovered individuals at time <span class="math inline">\(t=200\)</span>:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="constr.html#cb16-1" aria-hidden="true" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R200</span></code></pre></div>
-<pre><code>## Parameters and ranges:  b: c(0, 1e-04): mu: c(0, 1e-04): beta1: c(0.2, 0.3): beta2: c(0.1, 0.2): beta3: c(0.3, 0.5): lambda: c(0.07, 0.21): alpha: c(0.01, 0.025): gamma: c(0.05, 0.08): omega: c(0.002, 0.004) 
+<p>In <code>ems_wave1</code> we have information about all emulators. Let us take a look at the emulator of the number of recovered individuals at time <span class="math inline">\(t=40\)</span>:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="constr.html#cb18-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40</span></code></pre></div>
+<pre><code>## Parameters and ranges:  b: c(0, 1e-04): mu: c(0, 1e-04): beta1: c(0.2, 0.3): beta2: c(0.1, 0.2): beta3: c(0.3, 0.5): epsilon: c(0.07, 0.21): alpha: c(0.01, 0.025): gamma: c(0.05, 0.08): omega: c(0.002, 0.004) 
 ## Specifications: 
-##   Basis functions:  (Intercept); b; mu; beta1; beta2; lambda; alpha; gamma; omega 
-##   Active variables b; mu; beta1; beta2; lambda; alpha; gamma; omega 
-##   Regression Surface Expectation:  497.0889; 4.5664; -3.5143; 10.5443; 26.5885; -15.5909; -54.3963; -9.1179; -55.8317 
-##   Regression surface Variance (eigenvalues):  0; 0; 0; 0; 0; 0; 0; 0; 0 
+##   Basis functions:  (Intercept); mu; beta1; beta2; epsilon; alpha; gamma; omega; I(mu^2); I(beta1^2); I(epsilon^2); I(gamma^2); beta1:beta2; beta1:epsilon; beta1:alpha; beta1:gamma; beta2:epsilon; epsilon:alpha; epsilon:gamma; mu:alpha; beta1:omega; epsilon:omega 
+##   Active variables mu; beta1; beta2; epsilon; alpha; gamma; omega 
+##   Regression Surface Expectation:  304.9884; -0.9248; 50.5568; 8.9325; 106.9455; -24.1201; 13.4327; -4.2195; 2.2631; -2.6178; -25.8466; -7.7355; -2.1221; 19.8649; -4.5667; 3.3273; 3.6485; -9.6564; 3.3717; 1.2167; -2.3135; -1.9381 
+##   Regression surface Variance (eigenvalues):  0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0 
 ## Correlation Structure: 
 ## Bayes-adjusted emulator - prior specifications listed. 
-##   Variance (Representative):  77.3119 
+##   Variance (Representative):  2.372002 
 ##   Expectation:  0 
 ##   Correlation type: exp_sq 
 ##   Hyperparameters:  theta: 0.55 
 ##   Nugget term: 0.05 
-## Mixed covariance:  0 0 0 0 0 0 0 0 0</code></pre>
+## Mixed covariance:  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</code></pre>
 <p>The print statement provides an overview of the emulator specifications, which refer to the global part, and correlation structure, which refers to the local part:</p>
 <ul>
-<li><p>Active variables: these are the variables that have the most explanatory power for the chosen output. In our case all variables but <span class="math inline">\(\beta_3\)</span> are active.</p></li>
+<li><p>Active variables: these are the variables that have the most explanatory power for the chosen output. In our case all variables but <span class="math inline">\(b\)</span> and <span class="math inline">\(\beta_3\)</span> are active.</p></li>
 <li><p>Basis Functions: these are the functions composing the vector <span class="math inline">\(g(x)\)</span>. Note that, since by default <code>emulator_from_data</code> uses quadratic regression for the global part of the emulator, the list of basis functions contains not only the active variables but also products of them.</p></li>
 <li><p>First and second order specifications for <span class="math inline">\(\xi\)</span> and <span class="math inline">\(u(x)\)</span>. Note that by default <code>emulator_from_data</code> assumes that the regression surface is known and its coefficients are fixed. This explains why Regression Surface Variance and Mixed Covariance (which shows the covariance of <span class="math inline">\(\xi\)</span> and <span class="math inline">\(u(x)\)</span>) are both zero. The term Variance refers to <span class="math inline">\(\sigma^2\)</span> in <span class="math inline">\(u(x)\)</span>.</p></li>
 </ul>
 <p>We can also plot the emulators to see how they represent the output space: the <code>emulator_plot</code> function does this for emulator expectation (default option), variance, standard deviation, and implausibility.
 The emulator expectation plots show the structure of the regression surface, which is at most quadratic in its parameters, through a 2D slice of the input space.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="constr.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emulator_plot</span>(ems_wave1<span class="sc">$</span>R200, <span class="at">params =</span> <span class="fu">c</span>(<span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;gamma&#39;</span>))</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="constr.html#cb20-1" tabindex="-1"></a><span class="fu">emulator_plot</span>(ems_wave1<span class="sc">$</span>R40, <span class="at">params =</span> <span class="fu">c</span>(<span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;gamma&#39;</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /></p>
 <p>Here for each pair <span class="math inline">\((\bar \beta_1,\bar \gamma)\)</span> the plot shows the expected value produced by the emulator <code>ems_wave1$R200</code> at the parameter set having <span class="math inline">\(\beta_1=\bar \beta_1\)</span>, <span class="math inline">\(\gamma=\bar \gamma\)</span> and all other parameters equal to their mid-range value (the ranges of parameters are those that were passed to <code>emulator_from_data</code> to train <code>ems_wave1</code>). Note that we chose to display <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\gamma\)</span>, but any other pair can be selected. For consistency, we will use <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\gamma\)</span> throughout this workshop.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -358,8 +386,8 @@ Task
 </div>
 <div class="panel-body">
 <p>Is <span class="math inline">\(\beta_3\)</span> active for all emulators? Why?</p>
-<p><infobutton id="displayTextunnamed-chunk-68" onclick="javascript:toggle('unnamed-chunk-68');">Show: R tip</infobutton></p>
-<div id="toggleTextunnamed-chunk-68" style="display: none">
+<p><infobutton id="displayTextunnamed-chunk-116" onclick="javascript:toggle('unnamed-chunk-116');">Show: R tip</infobutton></p>
+<div id="toggleTextunnamed-chunk-116" style="display: none">
 <div class="panel panel-default">
 <div class="panel-body">
 <p>To show what variables are active for an emulator ‘em’ you can access the parameter <code>active_vars</code> of the emulator, typing <code>em$active_vars</code>.</p>
@@ -368,50 +396,116 @@ Task
 </div>
 </div>
 </div>
-<button id="displayTextunnamed-chunk-22" onclick="javascript:toggle(&#39;unnamed-chunk-22&#39;);">
+<button id="displayTextunnamed-chunk-24" onclick="javascript:toggle(&#39;unnamed-chunk-24&#39;);">
 Show: Solution
 </button>
-<div id="toggleTextunnamed-chunk-22" style="display: none">
+<div id="toggleTextunnamed-chunk-24" style="display: none">
 <div class="panel panel-default">
 <div class="panel-heading panel-heading1">
 Solution
 </div>
 <div class="panel-body">
 <p>Let us take a look at the emulators. To show what variables are active for an emulator ‘em’ we can simply type <code>em$active_vars</code>. For example:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="constr.html#cb19-1" aria-hidden="true" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R200<span class="sc">$</span>active_vars</span></code></pre></div>
-<pre><code>## [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE</code></pre>
-<p>shows what variables are active for the <span class="math inline">\(R200\)</span> emulator. Since <span class="math inline">\(\beta_3\)</span> is the fifth parameter (see for example <code>ranges</code>), then we can type</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="constr.html#cb21-1" aria-hidden="true" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R200<span class="sc">$</span>active_vars[<span class="dv">5</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="constr.html#cb21-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>active_vars</span></code></pre></div>
+<pre><code>## [1] FALSE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE</code></pre>
+<p>shows what variables are active for the <span class="math inline">\(R40\)</span> emulator. Since <span class="math inline">\(\beta_3\)</span> is the fifth parameter (see for example <code>ranges</code>), then we can type</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="constr.html#cb23-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>active_vars[<span class="dv">5</span>]</span></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
 <p>to just focus on <span class="math inline">\(\beta_3\)</span>. To look at the role of <span class="math inline">\(\beta_3\)</span> in all emulators at once, we create a logical vector looping through <code>ems_wave1</code>:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="constr.html#cb23-1" aria-hidden="true" tabindex="-1"></a>beta3_role <span class="ot">&lt;-</span> <span class="fu">logical</span>()</span>
-<span id="cb23-2"><a href="constr.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ems_wave1)) beta3_role[i] <span class="ot">&lt;-</span> ems_wave1[[i]]<span class="sc">$</span>active_vars[<span class="dv">5</span>]</span>
-<span id="cb23-3"><a href="constr.html#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(beta3_role) <span class="ot">&lt;-</span> <span class="fu">names</span>(ems_wave1)</span>
-<span id="cb23-4"><a href="constr.html#cb23-4" aria-hidden="true" tabindex="-1"></a>beta3_role</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="constr.html#cb25-1" tabindex="-1"></a>beta3_role <span class="ot">&lt;-</span> <span class="fu">logical</span>()</span>
+<span id="cb25-2"><a href="constr.html#cb25-2" tabindex="-1"></a><span class="cf">for</span> (em <span class="cf">in</span> ems_wave1) beta3_role <span class="ot">&lt;-</span> <span class="fu">c</span>(beta3_role, em<span class="sc">$</span>active_vars[<span class="dv">5</span>])</span>
+<span id="cb25-3"><a href="constr.html#cb25-3" tabindex="-1"></a><span class="fu">names</span>(beta3_role) <span class="ot">&lt;-</span> <span class="fu">names</span>(ems_wave1)</span>
+<span id="cb25-4"><a href="constr.html#cb25-4" tabindex="-1"></a>beta3_role</span></code></pre></div>
 <pre><code>##   I25   I40  I100  I200  I300  I350   R25   R40  R100  R200  R300  R350 
-## FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE  TRUE</code></pre>
+##  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE</code></pre>
 Here we see that <span class="math inline">\(\beta_3\)</span> tends to be more active at later times. This is in fact what we would expect: the later infection/recovery rates don’t have an impact on early time outputs.
 </div>
 </div>
 </div>
 <p>Looking at what variables are active for different emulators is often an instructive exercise. The code below produces a plot that shows all dependencies at once.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="constr.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_actives</span>(ems_wave1)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" /></p>
-<p>From this table, we can immediately see that mu is inactive for most outputs, while beta1, beta2, lambda, alpha, gamma are active for most outputs. We also notice again that beta3 tends to be active for outputs at later times and inactive for outputs at earlier times.</p>
-<p>As mentioned above, <code>emulator_plot</code> can also plot the variance of a given emulator:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="constr.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emulator_plot</span>(ems_wave1<span class="sc">$</span>R200, <span class="at">plot_type =</span> <span class="st">&#39;var&#39;</span>, <span class="at">params =</span> <span class="fu">c</span>(<span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;gamma&#39;</span>))</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="constr.html#cb27-1" tabindex="-1"></a><span class="fu">plot_actives</span>(ems_wave1)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" /></p>
+<p>From this table, we can see that <code>mu</code> is comparatively inactive for numbers of infected individuals, while <code>b</code> and <code>beta3</code> do not materially affect the number of recovered people at early times. We can also consider the <em>strength</em> of the effect of each variable on each output via the <code>effect_strength</code> function. It has a number of options, but here we will just focus on linear contributions by setting <code>quadratic = FALSE</code>, and plot the results in a grid similar to the above using <code>grid.plot = TRUE</code>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="constr.html#cb28-1" tabindex="-1"></a><span class="fu">effect_strength</span>(ems_wave1, <span class="at">plt =</span> <span class="cn">TRUE</span>, <span class="at">grid.plot =</span> <span class="cn">TRUE</span>, <span class="at">quadratic =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto;" /></p>
+<pre><code>##              b        mu      beta1     beta2     beta3    epsilon      alpha
+## I25  -0.382948  0.157043  31.677068  4.453202 -0.356442  61.649318 -13.856929
+## I40  -1.276443 -0.317668  30.801216  9.085243  0.000000  44.221136 -20.753678
+## I100  0.985647  0.000000  -9.244201  1.442522  0.270509 -22.126961  -5.209087
+## I200  0.118222 -0.049813  -1.037867  0.951325  0.008836  -1.751816  -0.586806
+## I300  2.338526 -0.800178 -10.913042  4.697695 26.979498   7.252356 -10.635246
+## I350  0.484357  0.000000   0.644534 -7.509973 -2.924860   4.638873   0.000000
+## R25   0.000000 -0.277618  18.603747  2.056547  0.000000  54.132898  -8.028669
+## R40   0.000000 -0.924834  50.556796  8.932483  0.000000 106.945488 -24.120060
+## R100  0.168179 -4.209105  35.844887 23.038942  1.504718  32.331620 -65.375844
+## R200  1.844695 -4.705837   8.263751 25.214285  0.883775 -14.639224 -57.565784
+## R300  4.465658 -6.207118 -13.233523 33.389707 43.168971  -8.201220 -62.444831
+## R350 14.384388 -5.602156 -37.632029 22.779135 77.893046   9.283787 -76.107127
+##           gamma      omega
+## I25  -29.902041   0.174290
+## I40  -48.392886   0.780604
+## I100  -9.408427   2.250681
+## I200  -1.036081   1.112744
+## I300 -14.788517  32.895957
+## I350   2.111609   7.649332
+## R25   13.792157  -1.266613
+## R40   13.432741  -4.219517
+## R100  -0.352768 -23.646552
+## R200  -4.884373 -57.453242
+## R300 -18.889645 -25.124285
+## R350  -3.382432  32.031470</code></pre>
+<p>In this plot, a blue square indicates a positive coefficient (so increasing the parameter increases the outputs) while a red square indicates the opposite; the strength of colour indicates the strength of effect. We can see the effect of the active variables in more detail here: <code>beta1</code> and <code>epsilon</code> have an appreciable positive effect on early-time infections, while <code>beta2</code> takes over this role at later times; <code>alpha</code>, on the other hand, dampens the number of infections and recoveries as it increases. These observations accord with our expectations; increase in the transmission rates and rate of infection, while if more individuals die from the disease then fewer will be recovering.</p>
+<p>We can also look at the uncertainty of the emulators across the space. As mentioned above, <code>emulator_plot</code> can also plot the variance of a given emulator:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="constr.html#cb30-1" tabindex="-1"></a><span class="fu">emulator_plot</span>(ems_wave1<span class="sc">$</span>R40, <span class="at">plot_type =</span> <span class="st">&#39;var&#39;</span>, <span class="at">params =</span> <span class="fu">c</span>(<span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;gamma&#39;</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-27-1.png" style="display: block; margin: auto;" /></p>
 <p>This plot shows the presence of a training point (purple-blue area on the right) close to the chosen slice of the input space. As discussed above, by default <code>emulator_plot</code> fixes all non-shown parameters to their mid-range, but different slices can be explored, through the argument <code>fixed_vals</code>. The purple-blue area indicates that the variance is low when we are close to the training point, which is in accordance with our expectation.</p>
-<p>Now that we have taken a look at the emulator expectation and the emulator variance, we might want to compare the relative contributions of the global and the residual terms to the overall emulator expectation. This can be done simply by examining the adjusted <span class="math inline">\(R^2\)</span> of the regression hypersurface:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="constr.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ems_wave1<span class="sc">$</span>R200<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span></code></pre></div>
-<pre><code>## [1] 0.9658606</code></pre>
-<p>We see that we have a very high value of the adjusted <span class="math inline">\(R^2\)</span>. This means that the regression term explains most of the behaviour of the output <span class="math inline">\(R200\)</span>. In particular, the residuals contribute little to the emulator predictions. This is not surprising, considering that we are working with a relatively simple SEIRS model. When dealing with more complex models, the regression term may be able to explain the model output less well. In such cases the residuals play a more important role.</p>
+<p>Now that we have taken a look at the emulator expectation and the emulator variance, we might want to compare the relative contributions of the global and the residual terms to the overall emulator expectation. This can be done simply by examining the adjusted <span class="math inline">\(R^2\)</span> of the regression hyper-surface:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="constr.html#cb31-1" tabindex="-1"></a><span class="fu">summary</span>(ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span></code></pre></div>
+<pre><code>## [1] 0.9994323</code></pre>
+<p>We see that we have an extremely high value of the adjusted <span class="math inline">\(R^2\)</span>. This means that the regression term explains most of the behaviour of the output <span class="math inline">\(R40\)</span>. In particular, the residuals contribute little to the emulator predictions. This is not surprising, considering that we are working with a relatively simple SEIRS model. When dealing with more complex models, the regression term may be able to explain the model output less well. In such cases the residuals play a more important role.</p>
+<div class="panel panel-default">
+<div class="panel-heading">
+Task
+</div>
+<div class="panel-body">
+<p>Do the residuals have a greater effect if we only consider (up to) linear terms in the variables?</p>
+<p><infobutton id="displayTextunnamed-chunk-133" onclick="javascript:toggle('unnamed-chunk-133');">Show: R tip</infobutton></p>
+<div id="toggleTextunnamed-chunk-133" style="display: none">
+<div class="panel panel-default">
+<div class="panel-body">
+<p>The <code>emulator_from_data</code> function allows us to specify the order of polynomial fitted using the <code>order</code> argument. The default is <code>emulator_from_data(..., order = 2)</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<button id="displayTextunnamed-chunk-30" onclick="javascript:toggle(&#39;unnamed-chunk-30&#39;);">
+Show: Solution
+</button>
+<div id="toggleTextunnamed-chunk-30" style="display: none">
+<div class="panel panel-default">
+<div class="panel-heading panel-heading1">
+Solution
+</div>
+<div class="panel-body">
+<p>We could train emulators to each output, but let us just focus on the recovered individuals at <span class="math inline">\(t=40\)</span> here.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="constr.html#cb33-1" tabindex="-1"></a>linear_r40_em <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(training, <span class="fu">c</span>(<span class="st">&#39;R40&#39;</span>), ranges, <span class="at">order =</span> <span class="dv">1</span>,</span>
+<span id="cb33-2"><a href="constr.html#cb33-2" tabindex="-1"></a>                                    <span class="at">specified_priors =</span> <span class="fu">list</span>(<span class="at">hyper_p =</span> <span class="fu">c</span>(<span class="fl">0.55</span>)))<span class="sc">$</span>R40</span>
+<span id="cb33-3"><a href="constr.html#cb33-3" tabindex="-1"></a><span class="fu">summary</span>(linear_r40_em<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span></code></pre></div>
+<pre><code>## [1] 0.9733467</code></pre>
+We can see that the adjusted <span class="math inline">\(R^2\)</span> has decreased, but is still high; in some circumstances we might therefore choose to use the linear emulators as they use fewer terms to fit to the data without a substantial reduction in accuracy.
+</div>
+</div>
+</div>
 </div>
 </div>
 <h3>References</h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-bower2010galaxy" class="csl-entry">
 Bower, Richard G, Michael Goldstein, and Ian Vernon. 2010. <span>“Galaxy Formation: A Bayesian Uncertainty Analysis.”</span> <em>Bayesian Analysis</em> 5 (4): 619–69.
+</div>
+<div id="ref-goldstein2007bayes" class="csl-entry">
+Goldstein, Michael, and David Wooff. 2007. <em>Bayes Linear Statistics: Theory and Methods</em>. John Wiley &amp; Sons.
 </div>
 <div id="ref-vernon2018bayesian" class="csl-entry">
 Vernon, Ian, Junli Liu, Michael Goldstein, James Rowe, Jen Topping, and Keith Lindsey. 2018. <span>“Bayesian Uncertainty Analysis for Complex Systems Biology Models: Emulation, Global Parameter Searches and Evaluation of Gene Functions.”</span> <em>BMC Systems Biology</em> 12 (1): 1–29.
@@ -473,7 +567,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');
