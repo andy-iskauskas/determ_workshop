@@ -328,42 +328,55 @@ Solution
 <span id="cb66-2"><a href="second-wave.html#cb66-2" tabindex="-1"></a>                             <span class="at">plt=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-211-1.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-211-2.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-211-3.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-211-4.png" style="display: block; margin: auto;" /></p>
 <p>We will use the automated diagnostic pass to modify these emulators:</p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="second-wave.html#cb67-1" tabindex="-1"></a>ems_wave2 <span class="ot">&lt;-</span> <span class="fu">diagnostic_pass</span>(ems_wave2, targets, validation, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="second-wave.html#cb67-1" tabindex="-1"></a>ems_wave2_new <span class="ot">&lt;-</span> <span class="fu">diagnostic_pass</span>(ems_wave2, <span class="at">targets =</span> targets, <span class="at">validation =</span> new_validation, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## Checking for structured errors in input space..
 ## Checking for structured errors in output space..
 ## Checking for problematic implausibility misclassifications..
-## Checking for issues in comparison diagnostics..</code></pre>
-<p>Then we can check the diagnostic plots again to ensure the results are acceptable.</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="second-wave.html#cb69-1" tabindex="-1"></a>new_new_points <span class="ot">&lt;-</span> <span class="fu">generate_new_design</span>(<span class="fu">c</span>(ems_wave2, ems_wave1), <span class="dv">180</span>, targets, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+## Classification diagnostic failures. Inflating relevant emulator uncertainties.
+## Checking for issues in comparison diagnostics..
+## Comparison diagnostic issues. Inflating relevant emulator uncertainties..
+## Some emulators show scaling issues: I200; I300; I350; R25; R100; R200; R350 
+## Some emulators did not pass diagnostics:  I200; I300; I350; R25; R100; R200; R350 .
+## Investigate these outputs carefully and consider adding in additional training points near problematic regions of space.</code></pre>
+<p>Note that the automated diagnostics have seen fit to remove quite a few of the emulators, since they cannot be easily modified automatically. We can look at these emulators to see if the automated process has been overly conservative, or if we need to worry about emulating the output:</p>
+<ul>
+<li><p><code>I200</code>: The validation plots look ok; there are some comparison diagnostic issues but nothing significant. We will include this as-is.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="second-wave.html#cb69-1" tabindex="-1"></a>  ems_wave2_new<span class="sc">$</span>I200 <span class="ot">&lt;-</span> ems_wave2<span class="sc">$</span>I200</span></code></pre></div></li>
+<li><p><code>I300</code>: We might be concerned about the classification diagnostic issue, since the emulator is predicting an implausibility around <span class="math inline">\(7\)</span> when the simulator implausibility is <span class="math inline">\(\sim3\)</span>. However, this is only an issue if that point (and its neighbourhood) would not be ruled out anyway (remember that these are univariate implausibilities). We can identify the point and look at the implausibility across all the ‘good’ emulators, using <code>classification_diag</code> directly to just perform the diagnostic we want.</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="second-wave.html#cb70-1" tabindex="-1"></a>  which_pts <span class="ot">&lt;-</span> <span class="fu">row.names</span>(<span class="fu">classification_diag</span>(ems_wave2<span class="sc">$</span>I300, <span class="at">targets =</span> targets, <span class="at">validation =</span> new_validation))</span>
+<span id="cb70-2"><a href="second-wave.html#cb70-2" tabindex="-1"></a>  <span class="fu">nth_implausible</span>(ems_wave2_new, new_validation[which_pts,], targets, <span class="at">n =</span> <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>##     5822 
+## 5.227289</code></pre>
+<p>The point is unsuitable for matching to the data anyway, since the implausibility across the other emulators is above <span class="math inline">\(5\)</span>, so we are unconcerned about this emulator and can include it as we did for <code>I200</code>.</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="second-wave.html#cb72-1" tabindex="-1"></a>ems_wave2_new<span class="sc">$</span>I300 <span class="ot">&lt;-</span> ems_wave2<span class="sc">$</span>I300</span></code></pre></div></li>
+<li><p><code>I350</code>: The comparison diagnostics look messy, and there is a ‘curve’ to the plot that suggests that the emulator has failed to capture the core response. We could include some of the validation points in the training set and retrain; however, here we will accept that we must leave this output out of this wave.</p></li>
+<li><p><code>R25</code>, <code>R100</code>, <code>R200</code>: The classification diagnostics show that, even were we to spend some time improving these emulators, they are very unlikely to rule out any space at all. We can therefore leave these emulators out.</p></li>
+<li><p><code>R350</code>: It looks like this would be improved by inflating the variance. We can do just that quite simply, with a bit of trial-and-error.</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="second-wave.html#cb73-1" tabindex="-1"></a>ems_wave2_new<span class="sc">$</span>R350 <span class="ot">&lt;-</span> ems_wave2<span class="sc">$</span>R350<span class="sc">$</span><span class="fu">mult_sigma</span>(<span class="dv">3</span>)</span></code></pre></div></li>
+</ul>
+<p>Having done this, we can check the diagnostic plots again to ensure the results are acceptable.</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="second-wave.html#cb74-1" tabindex="-1"></a>vd <span class="ot">&lt;-</span> <span class="fu">validation_diagnostics</span>(ems_wave2_new, <span class="at">validation =</span> new_validation, <span class="at">targets =</span> targets, <span class="at">plt =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-217-1.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-217-2.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-217-3.png" style="display: block; margin: auto;" /></p>
+<p>Finally, we propose points to generate the design for the next wave.</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="second-wave.html#cb75-1" tabindex="-1"></a>new_new_points <span class="ot">&lt;-</span> <span class="fu">generate_new_design</span>(<span class="fu">c</span>(ems_wave2_new, ems_wave1), <span class="dv">180</span>, targets, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## Proposing from LHS...
 ## LHS has high yield; no other methods required.
 ## Proposing from LHS...
 ## Proposing from LHS...
-## Proposing from LHS...
-## 185 initial valid points generated for I=3.119
-## 173 initial valid points generated for I=3
-## Performing line sampling...
-## Line sampling generated 30 more points.
-## Selecting final points using maximin criterion...
-## Resample 1 
-## Performing line sampling...
-## Line sampling generated 33 more points.
-## Performing importance sampling...
-## Importance sampling generated 137 more points.
 ## Selecting final points using maximin criterion...</code></pre>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="second-wave.html#cb71-1" tabindex="-1"></a><span class="fu">plot_wrap</span>(new_new_points, ranges)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-213-1.png" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="second-wave.html#cb77-1" tabindex="-1"></a><span class="fu">plot_wrap</span>(new_new_points, ranges)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-218-1.png" style="display: block; margin: auto;" /></p>
 <p>This worked well: the new non-implausible region is clearly smaller than the one we had at the end of wave one. In the next section we will show how to make visualisations to direcly compare the non-implausible space at the end of different waves of the process.</p>
 </div>
 </div>
 </div>
 <p>As we did for the wave 1 emulators, let us check the values of the adjusted <span class="math inline">\(R^2\)</span> for the new emulators:</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="second-wave.html#cb72-1" tabindex="-1"></a>R_squared_new <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb72-2"><a href="second-wave.html#cb72-2" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ems_wave2)) {</span>
-<span id="cb72-3"><a href="second-wave.html#cb72-3" tabindex="-1"></a>  R_squared_new[[i]] <span class="ot">&lt;-</span> <span class="fu">summary</span>(ems_wave2[[i]]<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span>
-<span id="cb72-4"><a href="second-wave.html#cb72-4" tabindex="-1"></a>}</span>
-<span id="cb72-5"><a href="second-wave.html#cb72-5" tabindex="-1"></a><span class="fu">names</span>(R_squared_new) <span class="ot">&lt;-</span> <span class="fu">names</span>(ems_wave2)</span>
-<span id="cb72-6"><a href="second-wave.html#cb72-6" tabindex="-1"></a><span class="fu">unlist</span>(R_squared_new)</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="second-wave.html#cb78-1" tabindex="-1"></a>R_squared_new <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb78-2"><a href="second-wave.html#cb78-2" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ems_wave2)) {</span>
+<span id="cb78-3"><a href="second-wave.html#cb78-3" tabindex="-1"></a>  R_squared_new[[i]] <span class="ot">&lt;-</span> <span class="fu">summary</span>(ems_wave2[[i]]<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span>
+<span id="cb78-4"><a href="second-wave.html#cb78-4" tabindex="-1"></a>}</span>
+<span id="cb78-5"><a href="second-wave.html#cb78-5" tabindex="-1"></a><span class="fu">names</span>(R_squared_new) <span class="ot">&lt;-</span> <span class="fu">names</span>(ems_wave2)</span>
+<span id="cb78-6"><a href="second-wave.html#cb78-6" tabindex="-1"></a><span class="fu">unlist</span>(R_squared_new)</span></code></pre></div>
 <pre><code>##       I25       I40      I100      I200      I300      I350       R25       R40 
 ## 0.9998404 0.9996392 0.9986963 0.9974565 0.9967800 0.9659110 0.9999257 0.9996721 
 ##      R100      R200      R300      R350 

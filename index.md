@@ -858,15 +858,18 @@ A video presentation of this section can be found [here](https://youtu.be/8TNNUM
 
 In this section we explore various diagnostic tests to evaluate the performance of the emulators and we learn how to address emulators that fail one or more of these diagnostics.
 
-<infobutton id="displayTextunnamed-chunk-35" onclick="javascript:toggle('unnamed-chunk-35');">Show: R tip</infobutton>
-
-<div id="toggleTextunnamed-chunk-35" style="display: none"><div class="panel panel-default"><div class="panel-body">
+<div class="panel panel-default"><div class="panel-heading panel-heading2"> R tip </div><div class="panel-body"> 
 
 The discussion below is very useful for understanding *why* emulators are not performing well, and allows us to make informed judgements about our training data, and which parts of parameter space we are failing to represent well. However, this can be a slow process when we have many outputs to emulate: `hmer` can automate this process for determinstic emulators using the `diagnostic_pass` function. It will:
-  - Check for structured input errors (i.e. errors which depend on the part of parameter space we are in);
-  - Check for structured output errors (those which depend on the scale of the output);
-  - Check misclassification errors as below;
-  - Check comparison diagnostics as below.
+  
+* Check for structured input errors (i.e. errors which depend on the part of parameter space we are in);
+
+* Check for structured output errors (those which depend on the scale of the output);
+
+* Check misclassification errors as below;
+
+* Check comparison diagnostics as below.
+
 If any of these checks flag possible issues, it makes the appropriate adjustments to the emulator structure; if it still cannot produce a good emulator after these changes, it discards that output.
 
 For our example, we can use this with the following command:
@@ -874,7 +877,7 @@ For our example, we can use this with the following command:
 ``` r
 adjusted_ems_wave1 <- diagnostic_pass(ems_wave1, targets, validation, verbose = TRUE)
 ```
-</div></div></div>
+ </div></div>
 
 For a given set of emulators, we want to assess how accurately they reflect the model outputs over the input space. For a given validation set, we can ask the following questions:
 
@@ -973,7 +976,7 @@ vd <- validation_diagnostics(hugesigma_emulator, validation = validation, target
 
 With this choice of $\sigma$, we see that our emulator is extremely cautious. If we look at the plot in the middle, we see that now a lot of points in the validation set have an implausibility less or equal to $3$. This implies that this emulator will reduce the input space slowly. As explained above, having consistent very small standardised errors is not positive: it implies that, even though we trained a regression hypersurface in order to catch the global behaviour of the output, the sigma is so large that the emulator is being dominated by the correlation structure. This means at best that we will have to do many more waves of history matching than are necessary, and at worst that our emulators won’t be able to reduce the non-implausible parameter space.
 
-The above exploration highlights the importance of finding a value of $\sigma$ that produces an emulator which on one hand is not overconfident and on the other is able to quickly reduce the input space. Note that there is not a universal rule to navigate this tradeoff: the role of the scientist's judgment is fundamental.  
+The above exploration highlights the importance of finding a value of $\sigma$ that produces an emulator which on one hand is not overconfident and on the other is able to quickly reduce the input space. Note that there is not a universal rule to navigate this tradeoff: the role of the scientist's judgement is fundamental.  
 </div></div></div>
 
 # Proposing new points
@@ -1273,21 +1276,69 @@ We will use the automated diagnostic pass to modify these emulators:
   
 
 ``` r
-ems_wave2 <- diagnostic_pass(ems_wave2, targets, validation, verbose = TRUE)
+ems_wave2_new <- diagnostic_pass(ems_wave2, targets = targets, validation = new_validation, verbose = TRUE)
 ```
 
 ```
 ## Checking for structured errors in input space..
 ## Checking for structured errors in output space..
 ## Checking for problematic implausibility misclassifications..
+## Classification diagnostic failures. Inflating relevant emulator uncertainties.
 ## Checking for issues in comparison diagnostics..
+## Comparison diagnostic issues. Inflating relevant emulator uncertainties..
+## Some emulators show scaling issues: I200; I300; I350; R25; R100; R200; R350 
+## Some emulators did not pass diagnostics:  I200; I300; I350; R25; R100; R200; R350 .
+## Investigate these outputs carefully and consider adding in additional training points near problematic regions of space.
 ```
 
-Then we can check the diagnostic plots again to ensure the results are acceptable.
+Note that the automated diagnostics have seen fit to remove quite a few of the emulators, since they cannot be easily modified automatically. We can look at these emulators to see if the automated process has been overly conservative, or if we need to worry about emulating the output:
+  
+* `I200`: The validation plots look ok; there are some comparison diagnostic issues but nothing significant. We will include this as-is.
+  
+  ``` r
+    ems_wave2_new$I200 <- ems_wave2$I200
+  ```
+
+* `I300`: We might be concerned about the classification diagnostic issue, since the emulator is predicting an implausibility around $7$ when the simulator implausibility is $\sim3$. However, this is only an issue if that point (and its neighbourhood) would not be ruled out anyway (remember that these are univariate implausibilities). We can identify the point and look at the implausibility across all the 'good' emulators, using `classification_diag` directly to just perform the diagnostic we want. 
+  
+  ``` r
+    which_pts <- row.names(classification_diag(ems_wave2$I300, targets = targets, validation = new_validation))
+    nth_implausible(ems_wave2_new, new_validation[which_pts,], targets, n = 1)
+  ```
+  
+  ```
+  ##     5822 
+  ## 5.227289
+  ```
+The point is unsuitable for matching to the data anyway, since the implausibility across the other emulators is above $5$, so we are unconcerned about this emulator and can include it as we did for `I200`.
+  
+  ``` r
+  ems_wave2_new$I300 <- ems_wave2$I300
+  ```
+
+* `I350`: The comparison diagnostics look messy, and there is a 'curve' to the plot that suggests that the emulator has failed to capture the core response. We could include some of the validation points in the training set and retrain; however, here we will accept that we must leave this output out of this wave.
+  
+* `R25`, `R100`, `R200`: The classification diagnostics show that, even were we to spend some time improving these emulators, they are very unlikely to rule out any space at all. We can therefore leave these emulators out.
+  
+* `R350`: It looks like this would be improved by inflating the variance. We can do just that quite simply, with a bit of trial-and-error.
+  
+  ``` r
+  ems_wave2_new$R350 <- ems_wave2$R350$mult_sigma(3)
+  ```
+    
+Having done this, we can check the diagnostic plots again to ensure the results are acceptable.
+
+``` r
+vd <- validation_diagnostics(ems_wave2_new, validation = new_validation, targets = targets, plt = TRUE)
+```
+
+<img src="_main_files/figure-html/unnamed-chunk-217-1.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-217-2.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-217-3.png" style="display: block; margin: auto;" />
+
+Finally, we propose points to generate the design for the next wave.
   
 
 ``` r
-new_new_points <- generate_new_design(c(ems_wave2, ems_wave1), 180, targets, verbose=TRUE)
+new_new_points <- generate_new_design(c(ems_wave2_new, ems_wave1), 180, targets, verbose=TRUE)
 ```
 
 ```
@@ -1295,17 +1346,6 @@ new_new_points <- generate_new_design(c(ems_wave2, ems_wave1), 180, targets, ver
 ## LHS has high yield; no other methods required.
 ## Proposing from LHS...
 ## Proposing from LHS...
-## Proposing from LHS...
-## 185 initial valid points generated for I=3.119
-## 173 initial valid points generated for I=3
-## Performing line sampling...
-## Line sampling generated 30 more points.
-## Selecting final points using maximin criterion...
-## Resample 1 
-## Performing line sampling...
-## Line sampling generated 33 more points.
-## Performing importance sampling...
-## Importance sampling generated 137 more points.
 ## Selecting final points using maximin criterion...
 ```
 
@@ -1313,7 +1353,7 @@ new_new_points <- generate_new_design(c(ems_wave2, ems_wave1), 180, targets, ver
 plot_wrap(new_new_points, ranges)
 ```
 
-<img src="_main_files/figure-html/unnamed-chunk-213-1.png" style="display: block; margin: auto;" />
+<img src="_main_files/figure-html/unnamed-chunk-218-1.png" style="display: block; margin: auto;" />
 
 This worked well: the new non-implausible region is clearly smaller than the one we had at the end of wave one. In the next section we will show how to make visualisations to direcly compare the non-implausible space at the end of different waves of the process.
 </div></div></div>
@@ -1393,13 +1433,13 @@ In the plot above, some targets are easier to read than others: this is due to t
 simulator_plot(all_points, targets, normalize = TRUE)
 ```
 
-<img src="_main_files/figure-html/unnamed-chunk-229-1.png" style="display: block; margin: auto;" />
+<img src="_main_files/figure-html/unnamed-chunk-239-1.png" style="display: block; margin: auto;" />
 
 ``` r
 simulator_plot(all_points, targets, logscale = TRUE)
 ```
 
-<img src="_main_files/figure-html/unnamed-chunk-229-2.png" style="display: block; margin: auto;" />
+<img src="_main_files/figure-html/unnamed-chunk-239-2.png" style="display: block; margin: auto;" />
 These normalised/logscaled plots allow us to investigate better targets such as I200: it is now clear that this is not matched yet, even at the end of wave two. </div></div></div>
 
 In the third visualisation, output values for non-implausible parameter sets at each wave are shown for each combination of two outputs: 
