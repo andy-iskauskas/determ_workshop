@@ -237,19 +237,21 @@ div.csl-indent {
 <h1><span class="header-section-number">7</span> Emulator diagnostics<a href="emulator-diagnostics.html#emulator-diagnostics" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>A video presentation of this section can be found <a href="https://youtu.be/8TNNUM9k4uQ">here</a>.</p>
 <p>In this section we explore various diagnostic tests to evaluate the performance of the emulators and we learn how to address emulators that fail one or more of these diagnostics.</p>
-<p><infobutton id="displayTextunnamed-chunk-35" onclick="javascript:toggle('unnamed-chunk-35');">Show: R tip</infobutton></p>
-<div id="toggleTextunnamed-chunk-35" style="display: none">
 <div class="panel panel-default">
+<div class="panel-heading panel-heading2">
+R tip
+</div>
 <div class="panel-body">
-<p>The discussion below is very useful for understanding <em>why</em> emulators are not performing well, and allows us to make informed judgements about our training data, and which parts of parameter space we are failing to represent well. However, this can be a slow process when we have many outputs to emulate: <code>hmer</code> can automate this process for determinstic emulators using the <code>diagnostic_pass</code> function. It will:
-- Check for structured input errors (i.e. errors which depend on the part of parameter space we are in);
-- Check for structured output errors (those which depend on the scale of the output);
-- Check misclassification errors as below;
-- Check comparison diagnostics as below.
-If any of these checks flag possible issues, it makes the appropriate adjustments to the emulator structure; if it still cannot produce a good emulator after these changes, it discards that output.</p>
+<p>The discussion below is very useful for understanding <em>why</em> emulators are not performing well, and allows us to make informed judgements about our training data, and which parts of parameter space we are failing to represent well. However, this can be a slow process when we have many outputs to emulate: <code>hmer</code> can automate this process for determinstic emulators using the <code>diagnostic_pass</code> function. It will:</p>
+<ul>
+<li><p>Check for structured input errors (i.e. errors which depend on the part of parameter space we are in);</p></li>
+<li><p>Check for structured output errors (those which depend on the scale of the output);</p></li>
+<li><p>Check misclassification errors as below;</p></li>
+<li><p>Check comparison diagnostics as below.</p></li>
+</ul>
+<p>If any of these checks flag possible issues, it makes the appropriate adjustments to the emulator structure; if it still cannot produce a good emulator after these changes, it discards that output.</p>
 <p>For our example, we can use this with the following command:</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="emulator-diagnostics.html#cb42-1" tabindex="-1"></a>adjusted_ems_wave1 <span class="ot">&lt;-</span> <span class="fu">diagnostic_pass</span>(ems_wave1, targets, validation, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-</div>
 </div>
 </div>
 <p>For a given set of emulators, we want to assess how accurately they reflect the model outputs over the input space. For a given validation set, we can ask the following questions:</p>
@@ -322,7 +324,7 @@ Solution
 <span id="cb46-3"><a href="emulator-diagnostics.html#cb46-3" tabindex="-1"></a>                             <span class="at">plt=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-171-1.png" style="display: block; margin: auto;" /></p>
 <p>With this choice of <span class="math inline">\(\sigma\)</span>, we see that our emulator is extremely cautious. If we look at the plot in the middle, we see that now a lot of points in the validation set have an implausibility less or equal to <span class="math inline">\(3\)</span>. This implies that this emulator will reduce the input space slowly. As explained above, having consistent very small standardised errors is not positive: it implies that, even though we trained a regression hypersurface in order to catch the global behaviour of the output, the sigma is so large that the emulator is being dominated by the correlation structure. This means at best that we will have to do many more waves of history matching than are necessary, and at worst that our emulators won’t be able to reduce the non-implausible parameter space.</p>
-<p>The above exploration highlights the importance of finding a value of <span class="math inline">\(\sigma\)</span> that produces an emulator which on one hand is not overconfident and on the other is able to quickly reduce the input space. Note that there is not a universal rule to navigate this tradeoff: the role of the scientist’s judgment is fundamental.</p>
+<p>The above exploration highlights the importance of finding a value of <span class="math inline">\(\sigma\)</span> that produces an emulator which on one hand is not overconfident and on the other is able to quickly reduce the input space. Note that there is not a universal rule to navigate this tradeoff: the role of the scientist’s judgement is fundamental.</p>
 </div>
 </div>
 </div>
