@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.4)  9 JUL 2024 10:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.4)  24 JUL 2024 12:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1713,33 +1713,40 @@ Overfull \hbox (135.02106pt too wide) in paragraph at lines 1724--1724
  additional training points near problematic regions of space.[] 
  []
 
-<_main_files/figure-latex/unnamed-chunk-225-1.pdf, id=895, 696.6025pt x 697.606
+<_main_files/figure-latex/unnamed-chunk-221-1.pdf, id=895, 480.79625pt x 312.16
+624pt>
+File: _main_files/figure-latex/unnamed-chunk-221-1.pdf Graphic file (type pdf)
+<use _main_files/figure-latex/unnamed-chunk-221-1.pdf>
+Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-221-1.pdf  used
+ on input line 1735.
+(pdftex.def)             Requested size: 480.80238pt x 312.17024pt.
+<_main_files/figure-latex/unnamed-chunk-226-1.pdf, id=896, 696.6025pt x 697.606
 25pt>
-File: _main_files/figure-latex/unnamed-chunk-225-1.pdf Graphic file (type pdf)
-<use _main_files/figure-latex/unnamed-chunk-225-1.pdf>
-Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-225-1.pdf  used
- on input line 1782.
-(pdftex.def)             Requested size: 510.72649pt x 511.4624pt.
-<_main_files/figure-latex/unnamed-chunk-225-2.pdf, id=896, 696.6025pt x 697.606
-25pt>
-File: _main_files/figure-latex/unnamed-chunk-225-2.pdf Graphic file (type pdf)
-<use _main_files/figure-latex/unnamed-chunk-225-2.pdf>
-Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-225-2.pdf  used
- on input line 1784.
-(pdftex.def)             Requested size: 510.72649pt x 511.4624pt.
-<_main_files/figure-latex/unnamed-chunk-225-3.pdf, id=897, 698.61pt x 456.70625
-pt>
-File: _main_files/figure-latex/unnamed-chunk-225-3.pdf Graphic file (type pdf)
-<use _main_files/figure-latex/unnamed-chunk-225-3.pdf>
-Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-225-3.pdf  used
- on input line 1786.
-(pdftex.def)             Requested size: 510.72725pt x 333.8806pt.
-<_main_files/figure-latex/unnamed-chunk-226-1.pdf, id=898, 600.2425pt x 600.242
-5pt>
 File: _main_files/figure-latex/unnamed-chunk-226-1.pdf Graphic file (type pdf)
 <use _main_files/figure-latex/unnamed-chunk-226-1.pdf>
 Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-226-1.pdf  used
- on input line 1810.
+ on input line 1792.
+(pdftex.def)             Requested size: 510.72649pt x 511.4624pt.
+<_main_files/figure-latex/unnamed-chunk-226-2.pdf, id=897, 696.6025pt x 697.606
+25pt>
+File: _main_files/figure-latex/unnamed-chunk-226-2.pdf Graphic file (type pdf)
+<use _main_files/figure-latex/unnamed-chunk-226-2.pdf>
+Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-226-2.pdf  used
+ on input line 1794.
+(pdftex.def)             Requested size: 510.72649pt x 511.4624pt.
+<_main_files/figure-latex/unnamed-chunk-226-3.pdf, id=898, 698.61pt x 456.70625
+pt>
+File: _main_files/figure-latex/unnamed-chunk-226-3.pdf Graphic file (type pdf)
+<use _main_files/figure-latex/unnamed-chunk-226-3.pdf>
+Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-226-3.pdf  used
+ on input line 1796.
+(pdftex.def)             Requested size: 510.72725pt x 333.8806pt.
+<_main_files/figure-latex/unnamed-chunk-227-1.pdf, id=899, 600.2425pt x 600.242
+5pt>
+File: _main_files/figure-latex/unnamed-chunk-227-1.pdf Graphic file (type pdf)
+<use _main_files/figure-latex/unnamed-chunk-227-1.pdf>
+Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-227-1.pdf  used
+ on input line 1820.
 (pdftex.def)             Requested size: 510.73975pt x 510.73975pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1750,40 +1757,40 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [76] [77 <./_main_files/figure-latex/unnamed-chunk-219-1.pdf>] [78 <./_main_fil
 es/figure-latex/unnamed-chunk-219-2.pdf>] [79 <./_main_files/figure-latex/unnam
 ed-chunk-219-3.pdf>] [80 <./_main_files/figure-latex/unnamed-chunk-219-4.pdf>] 
-[81] [82 <./_main_files/figure-latex/unnamed-chunk-225-1.pdf>] [83 <./_main_fil
-es/figure-latex/unnamed-chunk-225-2.pdf>] [84 <./_main_files/figure-latex/unnam
-ed-chunk-225-3.pdf>]
-<_main_files/figure-latex/unnamed-chunk-247-1.pdf, id=1005, 634.37pt x 638.385p
+[81 <./_main_files/figure-latex/unnamed-chunk-221-1.pdf>] [82 <./_main_files/fi
+gure-latex/unnamed-chunk-226-1.pdf>] [83 <./_main_files/figure-latex/unnamed-ch
+unk-226-2.pdf>] [84 <./_main_files/figure-latex/unnamed-chunk-226-3.pdf>]
+<_main_files/figure-latex/unnamed-chunk-249-1.pdf, id=1014, 634.37pt x 638.385p
 t>
-File: _main_files/figure-latex/unnamed-chunk-247-1.pdf Graphic file (type pdf)
-<use _main_files/figure-latex/unnamed-chunk-247-1.pdf>
-Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-247-1.pdf  used
- on input line 1827.
+File: _main_files/figure-latex/unnamed-chunk-249-1.pdf Graphic file (type pdf)
+<use _main_files/figure-latex/unnamed-chunk-249-1.pdf>
+Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-249-1.pdf  used
+ on input line 1837.
 (pdftex.def)             Requested size: 510.73938pt x 513.9719pt.
-<_main_files/figure-latex/unnamed-chunk-247-2.pdf, id=1006, 634.37pt x 638.385p
+<_main_files/figure-latex/unnamed-chunk-249-2.pdf, id=1015, 634.37pt x 638.385p
 t>
-File: _main_files/figure-latex/unnamed-chunk-247-2.pdf Graphic file (type pdf)
-<use _main_files/figure-latex/unnamed-chunk-247-2.pdf>
-Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-247-2.pdf  used
- on input line 1835.
+File: _main_files/figure-latex/unnamed-chunk-249-2.pdf Graphic file (type pdf)
+<use _main_files/figure-latex/unnamed-chunk-249-2.pdf>
+Package pdftex.def Info: _main_files/figure-latex/unnamed-chunk-249-2.pdf  used
+ on input line 1845.
 (pdftex.def)             Requested size: 510.73938pt x 513.9719pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[85 <./_main_files/figure-latex/unnamed-chunk-226-1.pdf>] [86 <./_main_files/fi
-gure-latex/unnamed-chunk-247-1.pdf>] [87 <./_main_files/figure-latex/unnamed-ch
-unk-247-2.pdf>] [88
+[85 <./_main_files/figure-latex/unnamed-chunk-227-1.pdf>] [86 <./_main_files/fi
+gure-latex/unnamed-chunk-249-1.pdf>] [87 <./_main_files/figure-latex/unnamed-ch
+unk-249-2.pdf>] [88
 
 ]
 Appendix B.
 
 LaTeX Font Warning: Font shape `T1/lmtt/bx/it' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/sl' tried instead on input line 1859.
+(Font)              Font shape `T1/lmtt/b/sl' tried instead on input line 1869.
 
 
 
 Package tcolorbox Warning: Discard zero height first box part due to break prob
-lems (possible loss of zero height content) on input line 1899.
+lems (possible loss of zero height content) on input line 1909.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1791,7 +1798,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [89]
 
 Package tcolorbox Warning: Using nobreak failed. Try to enlarge `lines before b
-reak' or set page breaks manually on input line 1899.
+reak' or set page breaks manually on input line 1909.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1801,10 +1808,10 @@ Underfull \vbox (badness 3460) has occurred while \output is active []
 
 [91] [92] (./_main.aux) ) 
 Here is how much of TeX's memory you used:
- 33184 strings out of 478268
- 671767 string characters out of 5846348
- 1002072 words of memory out of 5000000
- 50223 multiletter control sequences out of 15000+600000
+ 33193 strings out of 478268
+ 672233 string characters out of 5846348
+ 1003129 words of memory out of 5000000
+ 50231 multiletter control sequences out of 15000+600000
  744472 words of font info for 272 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  90i,9n,99p,1473b,998s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1830,10 +1837,10 @@ lic/lm/lmsy7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtk
 usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/
 texlive/2022/texmf-dist/fonts/type1/public/lm/lmtti10.pfb></usr/local/texlive/2
 022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on _main.pdf (92 pages, 11001661 bytes).
+Output written on _main.pdf (92 pages, 11035623 bytes).
 PDF statistics:
- 1256 PDF objects out of 1440 (max. 8388607)
- 935 compressed objects within 10 object streams
+ 1265 PDF objects out of 1440 (max. 8388607)
+ 941 compressed objects within 10 object streams
  201 named destinations out of 1000 (max. 500000)
- 66098 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 66103 words of extra memory for PDF output out of 74296 (max. 10000000)
 

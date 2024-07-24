@@ -917,7 +917,7 @@ Finally, **the third column** gives the standardised errors of the emulator outp
 
 - Is the histogram skewing significantly in one direction or the other? If this is the case, the emulator tends to either overestimate or underestimate the model output.
 
-The diagnostics above are not particularly bad, but we will try to modify our emulator to make it more conservative and avoid misclassifications in the bottom right quadrant (second column).
+The diagnostics in the plot above are not particularly bad, but we will try to modify our emulator to make it more conservative to avoid the large number of points for which the emulator is overconfident (the red error-bars in the first column).
 
 A way of improving the performance of an emulator is by changing the variance $\sigma^2$ in the Gaussian process $u$:
 $$\sigma^2 \left[(1-\delta) c(x,x^{\prime}) + \delta I_{\{x=x^\prime\}}\right].$$
@@ -933,7 +933,7 @@ vd <- validation_diagnostics(sigmadoubled_emulator,
 
 <img src="_main_files/figure-html/unnamed-chunk-39-1.png" style="display: block; margin: auto;" />
 
-A higher value of $\sigma$ has therefore allowed us to build a more conservative emulator that performs better than before.
+A higher value of $\sigma$ has therefore allowed us to build a more conservative emulator that performs better than before. While this is not particularly clear in the middle column, the error-bars in the first column have been widened, resulting in fewer validation points showing as red, and the scale on the standardised errors (third column) is changed quite substantially.
 
 
 <div class="panel panel-default"><div class="panel-heading"> Task </div><div class="panel-body"> 
@@ -1200,7 +1200,7 @@ Since wave two emulators will be trained only on the non-implausible space from 
 In the task below, you can have a go at wave 2 of the emulation and history matching process yourself.
 
 <div class="panel panel-default"><div class="panel-heading"> Task </div><div class="panel-body"> 
-Using `new_points` and setting `check.ranges` to `TRUE`, train new emulators. Customise them and generate new parameter sets. </div></div>
+Using `new_points` and setting `check.ranges` to `TRUE`, train new emulators. Perform diagnostic checking (perhaps with `diagnostic_pass`), customise the emulators and generate new parameter sets. </div></div>
 
 <button id="displayTextunnamed-chunk-54" onclick="javascript:toggle('unnamed-chunk-54');">Show: Solution</button>
 
@@ -1291,7 +1291,16 @@ ems_wave2_new <- diagnostic_pass(ems_wave2, targets = targets, validation = new_
 ## Investigate these outputs carefully and consider adding in additional training points near problematic regions of space.
 ```
 
-Note that the automated diagnostics have seen fit to remove quite a few of the emulators, since they cannot be easily modified automatically. We can look at these emulators to see if the automated process has been overly conservative, or if we need to worry about emulating the output:
+Note that the automated diagnostics have performed some variance inflation, as for instance we can see with the `I100` output:
+
+  
+  ``` r
+    vdiag <- validation_diagnostics(list(I100 = ems_wave2$I100, I100 = ems_wave2_new$I100), targets = targets, validation = new_validation, plt = TRUE)
+  ```
+  
+  <img src="_main_files/figure-html/unnamed-chunk-213-1.png" style="display: block; margin: auto;" />
+
+It has also seen fit to remove quite a few of the emulators, since they cannot be easily modified automatically. We can look at these emulators to see if the automated process has been overly conservative, or if we even need to worry about emulating the output. *Note that it is fine to simply apply `diagnostic_pass` and use the emulators it produces: they may be more conservative than the emulators we would obtain by hand and thus rule out less of the parameter region, but they remain valid emulators for using in `generate_new_design`.
   
 * `I200`: The validation plots look ok; there are some comparison diagnostic issues but nothing significant. We will include this as-is.
   
@@ -1318,7 +1327,7 @@ The point is unsuitable for matching to the data anyway, since the implausibilit
 
 * `I350`: The comparison diagnostics look messy, and there is a 'curve' to the plot that suggests that the emulator has failed to capture the core response. We could include some of the validation points in the training set and retrain; however, here we will accept that we must leave this output out of this wave.
   
-* `R25`, `R100`, `R200`: The classification diagnostics show that, even were we to spend some time improving these emulators, they are very unlikely to rule out any space at all. We can therefore leave these emulators out.
+* `R25`, `R100`, `R200`: The classification diagnostics show that, even were we to spend some time improving these emulators, they are very unlikely to rule out any space at all. In particular, there are few or no points above simulator implausibility $3$, so a more restrictive emulator is not going to be able to rule out more space without risking being overly restrictive. We can therefore leave these emulators out at this wave.
   
 * `R350`: It looks like this would be improved by inflating the variance. We can do just that quite simply, with a bit of trial-and-error.
   
@@ -1332,7 +1341,7 @@ Having done this, we can check the diagnostic plots again to ensure the results 
 vd <- validation_diagnostics(ems_wave2_new, validation = new_validation, targets = targets, plt = TRUE)
 ```
 
-<img src="_main_files/figure-html/unnamed-chunk-217-1.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-217-2.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-217-3.png" style="display: block; margin: auto;" />
+<img src="_main_files/figure-html/unnamed-chunk-218-1.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-218-2.png" style="display: block; margin: auto;" /><img src="_main_files/figure-html/unnamed-chunk-218-3.png" style="display: block; margin: auto;" />
 
 Finally, we propose points to generate the design for the next wave.
   
@@ -1353,7 +1362,7 @@ new_new_points <- generate_new_design(c(ems_wave2_new, ems_wave1), 180, targets,
 plot_wrap(new_new_points, ranges)
 ```
 
-<img src="_main_files/figure-html/unnamed-chunk-218-1.png" style="display: block; margin: auto;" />
+<img src="_main_files/figure-html/unnamed-chunk-219-1.png" style="display: block; margin: auto;" />
 
 This worked well: the new non-implausible region is clearly smaller than the one we had at the end of wave one. In the next section we will show how to make visualisations to direcly compare the non-implausible space at the end of different waves of the process.
 </div></div></div>
@@ -1433,13 +1442,13 @@ In the plot above, some targets are easier to read than others: this is due to t
 simulator_plot(all_points, targets, normalize = TRUE)
 ```
 
-<img src="_main_files/figure-html/unnamed-chunk-239-1.png" style="display: block; margin: auto;" />
+<img src="_main_files/figure-html/unnamed-chunk-241-1.png" style="display: block; margin: auto;" />
 
 ``` r
 simulator_plot(all_points, targets, logscale = TRUE)
 ```
 
-<img src="_main_files/figure-html/unnamed-chunk-239-2.png" style="display: block; margin: auto;" />
+<img src="_main_files/figure-html/unnamed-chunk-241-2.png" style="display: block; margin: auto;" />
 These normalised/logscaled plots allow us to investigate better targets such as I200: it is now clear that this is not matched yet, even at the end of wave two. </div></div></div>
 
 In the third visualisation, output values for non-implausible parameter sets at each wave are shown for each combination of two outputs: 
