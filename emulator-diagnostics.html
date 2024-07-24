@@ -278,7 +278,7 @@ R tip
 <li><p>Is <span class="math inline">\(95\%\)</span> of the probability mass concentrated in a considerably smaller interval than <span class="math inline">\([-3,3]\)</span> (say, for example, <span class="math inline">\([-0.5,0.5]\)</span>)? For this to happen, the emulator uncertainty must be quite large. In such case the emulator, being extremely cautious, will cut out a small part of the parameter space and we will end up needing many more waves of history matching than are necessary.</p></li>
 <li><p>Is the histogram skewing significantly in one direction or the other? If this is the case, the emulator tends to either overestimate or underestimate the model output.</p></li>
 </ul>
-<p>The diagnostics above are not particularly bad, but we will try to modify our emulator to make it more conservative and avoid misclassifications in the bottom right quadrant (second column).</p>
+<p>The diagnostics in the plot above are not particularly bad, but we will try to modify our emulator to make it more conservative to avoid the large number of points for which the emulator is overconfident (the red error-bars in the first column).</p>
 <p>A way of improving the performance of an emulator is by changing the variance <span class="math inline">\(\sigma^2\)</span> in the Gaussian process <span class="math inline">\(u\)</span>:
 <span class="math display">\[\sigma^2 \left[(1-\delta) c(x,x^{\prime}) + \delta I_{\{x=x^\prime\}}\right].\]</span>
 The lower the value of <span class="math inline">\(\sigma\)</span>, the more ‘certain’ the emulator will be. This means that when an emulator is a little too overconfident (as in our case above), we can try increasing <span class="math inline">\(\sigma\)</span>. Below we train a new emulator setting <span class="math inline">\(\sigma\)</span> to be 2 times as much as its default value, through the method <code>mult_sigma</code>:</p>
@@ -286,7 +286,7 @@ The lower the value of <span class="math inline">\(\sigma\)</span>, the more ‘
 <span id="cb44-2"><a href="emulator-diagnostics.html#cb44-2" tabindex="-1"></a>vd <span class="ot">&lt;-</span> <span class="fu">validation_diagnostics</span>(sigmadoubled_emulator, </span>
 <span id="cb44-3"><a href="emulator-diagnostics.html#cb44-3" tabindex="-1"></a>                             <span class="at">validation =</span> validation, <span class="at">targets =</span> targets, <span class="at">plt=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-39-1.png" style="display: block; margin: auto;" /></p>
-<p>A higher value of <span class="math inline">\(\sigma\)</span> has therefore allowed us to build a more conservative emulator that performs better than before.</p>
+<p>A higher value of <span class="math inline">\(\sigma\)</span> has therefore allowed us to build a more conservative emulator that performs better than before. While this is not particularly clear in the middle column, the error-bars in the first column have been widened, resulting in fewer validation points showing as red, and the scale on the standardised errors (third column) is changed quite substantially.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 Task
