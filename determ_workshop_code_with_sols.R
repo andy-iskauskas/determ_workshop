@@ -188,29 +188,37 @@ wave0 <- cbind(initial_points, initial_results)
 training <- wave0[1:90,]
 validation <- wave0[91:180,]
 
+# Example of a 1d emulator
+func <- function(x) 2*x + 3*x*sin(5*pi*(x-0.1)/0.4)
+pts <- seq(0.05, 0.5, by = 0.05)
+output <- sapply(pts, func)
+test_em <- emulator_from_data(input_data = data.frame(x = pts, f = output),
+                              output_names = c('f'),
+                              ranges = list(x = c(0, 0.6)))
+
 # # # # # # # # # # # # # # # # # # # #  4.2 TRAINING EMULATORS  # # # # # # # # # # # # # # # # # # # # # # #
 
 # Train the first set of emulators using the function `emulator_from_data`
 ems_wave1 <- emulator_from_data(training, names(targets), ranges, 
-                                c_lengths= rep(0.55,length(targets)))
+                                specified_priors = list(hyper_p = rep(0.55, length(targets))))
 # Show the emulator specification for the number of recovered people at t=200
-ems_wave1$R200
+ems_wave1$R40
 
 # Plot the emulator expectation for the number of recovered people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1$R200, params = c('beta1', 'gamma'))
+emulator_plot(ems_wave1$R40, params = c('beta1', 'gamma'))
 
 
 ###  Solution to the task on active variables ###
 
 # Show what variables are active for the emulator of the number of recovered people at t=200
-ems_wave1$R200$active_vars
+ems_wave1$R40$active_vars
 
 # Shows whether beta_3, the fifth parameter, is active
-ems_wave1$R200$active_vars[5]
+ems_wave1$R40$active_vars[5]
 
 # Loop through `ems_wave1` to look at the role of beta_3 in each of the emulators 
 beta3_role <- logical()
-for (i in 1:length(ems_wave1)) beta3_role[i] <- ems_wave1[[i]]$active_vars[5]
+for (em in ems_wave1) beta3_role <- c(beta3_role, em$active_vars[5])
 names(beta3_role) <- names(ems_wave1)
 beta3_role
 
@@ -220,11 +228,14 @@ beta3_role
 # Produce a plot showing what variables are active for different emulators, using the function `plot_actives`
 plot_actives(ems_wave1)
 
+# Produce a plot showing the linear effect strength for each input for each emulator
+effect_strength(ems_wave1, plt = TRUE, grid.plot = TRUE, quadratic = FALSE)
+
 # Plot the emulation variance for the number of recovered people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1$R200, plot_type = 'var', params = c('beta1', 'gamma'))
+emulator_plot(ems_wave1$R40, plot_type = 'var', params = c('beta1', 'gamma'))
 
 # Examine the adjusted R^2 squared of the regression hypersurface for the number of recovered people at t=200
-summary(ems_wave1$R200$model)$adj.r.squared
+summary(ems_wave1$R40$model)$adj.r.squared
 
 
 
@@ -233,7 +244,7 @@ summary(ems_wave1$R200$model)$adj.r.squared
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Plot the emulator implausibility for the number of recovered people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1$R200, plot_type = 'imp', 
+emulator_plot(ems_wave1$R40, plot_type = 'imp', 
               targets = targets, params = c('beta1', 'gamma'), cb=TRUE)
 
 # Plot the emulator implausibility for all emulators in the (beta1,gamma)-plane
@@ -266,6 +277,9 @@ emulator_plot(restricted_ems, plot_type = 'nimp', targets = targets[c(1,2,3,4,7,
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 ###########################################  6. EMULATOR DIAGNOSTICS  #########################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Example usage of diagnostic_pass
+adjusted_ems_wave1 <- diagnostic_pass(ems_wave1, targets, validation, verbose = TRUE)
 
 # Produce three diagnostics of the emulator for the number of recovered people at t=200 using 
 #`validation_diagnostics`
@@ -374,21 +388,35 @@ new_training <- wave1[new_t_sample,]
 new_validation <- wave1[-new_t_sample,]
 
 # Train wave 2 emulators using `emulator_from_data`, passing the new ranges to it
-ems_wave2 <- emulator_from_data(new_training, names(targets), ranges, check.ranges = TRUE, c_lengths= rep(0.55,length(targets)))
+ems_wave2 <- emulator_from_data(new_training, names(targets), ranges, check.ranges = TRUE,
+                                specified_priors = list(hyper_p = rep(0.55, length(targets))))
 # Produce diagnostics for all wave 2 emulators
 
 vd <- validation_diagnostics(ems_wave2, validation = new_validation, targets = targets, plt=TRUE)
-# Define a vector indicating the factor by which each sigma should be multiplied
-inflations <- c(2,4,2,2,2,1,3,2,2,2,2,2)
-for (i in 1:length(ems_wave2)) {
-ems_wave2[[i]] <- ems_wave2[[i]]$mult_sigma(inflations[[i]])
-}
 
-# Produce diagnostics for the modified wave 2 emulators 
-vd <- validation_diagnostics(ems_wave2, validation =  new_validation, targets = targets, plt=TRUE)
+# Use automated diagnostics as a first pass on all emulators
+ems_wave2_new <- diagnostic_pass(ems_wave2, targets = targets, validation = new_validation, verbose = TRUE)
+
+# Demonstrating the changes made to output I100
+vdiag <- validation_diagnostics(list(I100 = ems_wave2$I100, I100 = ems_wave2_new$I100),
+                                targets = targets, validation = new_validation, plt = TRUE)
+
+## Checking those emulators left out by diagnostic_pass:
+# I200 is fine; include it
+ems_wave2_new$I200 <- ems_wave2$I200
+# I300: check which points it's ruling out
+which_pts <- row.names(classification_diag(ems_wave2$I300, targets = targets, validation = new_validation))
+nth_implausible(ems_wave2_new, new_validation[which_pts,], targets, n = 1)
+# Point is not going to match to the other targets anyway: I300 is safe.
+ems_wave2_new$I300 <- ems_wave2$I300
+# R350 is still a bit overconfident: inflate sigma and include
+ems_wave2_new$R350 <- ems_wave2$R350$mult_sigma(3)
+
+# Finally, check the validation diagnostics to make sure all's well
+vd <- validation_diagnostics(ems_wave2_new, validation = new_validation, targets = targets, plt = TRUE)
 
 # Generate 180 new parameter sets and plot them
-new_new_points <- generate_new_design(c(ems_wave2, ems_wave1), 180, targets, verbose=TRUE)
+new_new_points <- generate_new_design(c(ems_wave2_new, ems_wave1), 180, targets, verbose=TRUE)
 plot_wrap(new_new_points, ranges)
 
 ### End of the solution ###
@@ -396,10 +424,10 @@ plot_wrap(new_new_points, ranges)
 
 # Examine the adjusted R^2 squared of the regression hypersurface for all wave 2 emulators
 R_squared_new <- list()
-for (i in 1:length(ems_wave2)) {
-  R_squared_new[[i]] <- summary(ems_wave2[[i]]$model)$adj.r.squared
+for (i in 1:length(ems_wave2_new)) {
+  R_squared_new[[i]] <- summary(ems_wave2_new[[i]]$model)$adj.r.squared
 }
-names(R_squared_new) <- names(ems_wave2)
+names(R_squared_new) <- names(ems_wave2_new)
 unlist(R_squared_new)
 
 # Train new wave 1 emulators, setting `quadratic=FALSE` to assume a linear regression term  
@@ -412,28 +440,6 @@ R_squared_linear <- list()
  }
  names(R_squared_linear) <- names(ems_wave1_linear)
  unlist(R_squared_linear)
-
-# Plot the emulator variance for the number of infectious people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1_linear$I200, plot_type = 'var', 
-               params = c('beta1', 'gamma'))
-
-# Plot the emulator implausibility for the number of infectious people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1_linear$I200, plot_type = 'imp', targets = targets, 
-              params = c('beta1', 'gamma'), cb=TRUE)
-
-# Increase theta by a factor of three in the linear emulator for the number of infectious people at t=200 
-ems_wave1_linear$I200 <- ems_wave1_linear$I20$set_hyperparams(
-              list(theta=ems_wave1_linear$I200$corr$hyper_p$theta *3))
-# Plot the variance of the modified linear emulator for the number of infectious people at t=200 in the 
-# (beta1,gamma)-plane
-emulator_plot(ems_wave1_linear$I200, plot_type = 'var', 
-              params = c('beta1', 'gamma'))
-
-# Plot the implausibility of the modified linear emulator for the number of infectious people at t=200 in 
-# the (beta1,gamma)-plane
-emulator_plot(ems_wave1_linear$I200, plot_type = 'imp', targets = targets, 
-              params = c('beta1', 'gamma'), cb=TRUE)
-
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -468,4 +474,4 @@ simulator_plot(all_points, targets, logscale = TRUE)
 ### End of the solution ###
 
 # For each combination of two outputs, show the output values for non-implausible parameter sets at each wave.
-wave_values(all_points, targets, l_wod = 1, p_size = 1)
+wave_values(all_points, targets, l_wid = 1, p_size = 1)

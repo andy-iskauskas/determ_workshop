@@ -148,16 +148,24 @@ wave0 <- cbind(initial_points, initial_results)
 training <- wave0[1:90,]
 validation <- wave0[91:180,]
 
+# Example of a 1d emulator
+func <- function(x) 2*x + 3*x*sin(5*pi*(x-0.1)/0.4)
+pts <- seq(0.05, 0.5, by = 0.05)
+output <- sapply(pts, func)
+test_em <- emulator_from_data(input_data = data.frame(x = pts, f = output),
+                              output_names = c('f'),
+                              ranges = list(x = c(0, 0.6)))
+
 # # # # # # # # # # # # # # # # # # # #  4.2 TRAINING EMULATORS  # # # # # # # # # # # # # # # # # # # # # # #
 
 # Train the first set of emulators using the function `emulator_from_data`
 ems_wave1 <- emulator_from_data(training, names(targets), ranges, 
-                                c_lengths= rep(0.55,length(targets)))
+                                specified_priors = list(hyper_p = rep(0.55, length(targets))))
 # Show the emulator specification for the number of recovered people at t=200
-ems_wave1$R200
+ems_wave1$R40
 
 # Plot the emulator expectation for the number of recovered people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1$R200, params = c('beta1', 'gamma'))
+emulator_plot(ems_wave1$R40, params = c('beta1', 'gamma'))
 
 
 ###  Write here your solution to the task on active variables ###
@@ -168,11 +176,14 @@ emulator_plot(ems_wave1$R200, params = c('beta1', 'gamma'))
 # Produce a plot showing what variables are active for different emulators, using the function `plot_actives`
 plot_actives(ems_wave1)
 
+# Produce a plot showing the linear effect strength for each input for each emulator
+effect_strength(ems_wave1, plt = TRUE, grid.plot = TRUE, quadratic = FALSE)
+
 # Plot the emulation variance for the number of recovered people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1$R200, plot_type = 'var', params = c('beta1', 'gamma'))
+emulator_plot(ems_wave1$R40, plot_type = 'var', params = c('beta1', 'gamma'))
 
 # Examine the adjusted R^2 squared of the regression hypersurface for the number of recovered people at t=200
-summary(ems_wave1$R200$model)$adj.r.squared
+summary(ems_wave1$R40$model)$adj.r.squared
 
 
 
@@ -181,7 +192,7 @@ summary(ems_wave1$R200$model)$adj.r.squared
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Plot the emulator implausibility for the number of recovered people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1$R200, plot_type = 'imp', 
+emulator_plot(ems_wave1$R40, plot_type = 'imp', 
               targets = targets, params = c('beta1', 'gamma'), cb=TRUE)
 
 # Plot the emulator implausibility for all emulators in the (beta1,gamma)-plane
@@ -189,7 +200,7 @@ emulator_plot(ems_wave1, plot_type = 'imp',
               targets = targets, params = c('beta1', 'gamma'), cb=TRUE)
 
 
-### Write here your solution to the task on the functionalities of `emulator_plot` ###
+### Write here your solution to the task on the functionality of `emulator_plot` ###
 
 ### End of the solution ###
 
@@ -198,6 +209,9 @@ emulator_plot(ems_wave1, plot_type = 'imp',
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 ###########################################  6. EMULATOR DIAGNOSTICS  #########################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Example usage of diagnostic_pass
+adjusted_ems_wave1 <- diagnostic_pass(ems_wave1, targets, validation, verbose = TRUE)
 
 # Produce three diagnostics of the emulator for the number of recovered people at t=200 using 
 #`validation_diagnostics`
@@ -236,7 +250,7 @@ plot_wrap(new_points_restricted, ranges)
 
 # Pass the list of wave 1 emulators to `space_removed` to quantify how much of the input space has been cut out.
 # Here we set ppd to 2, to speed the process up. 
-space_removed(ems_wave1, targets, ppd=2) + geom_vline(xintercept = 3, lty = 2) + 
+space_removed(ems_wave1, targets, ppd=3) + geom_vline(xintercept = 3, lty = 2) + 
   geom_text(aes(x=3, label="x = 3",y=0.33), colour="black", 
             angle=90, vjust = 1.2, text=element_text(size=11))
 
@@ -282,32 +296,13 @@ for (i in 1:length(ems_wave1_linear)) {
 names(R_squared_linear) <- names(ems_wave1_linear)
 unlist(R_squared_linear)
 
-# Plot the emulator variance for the number of infectious people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1_linear$I200, plot_type = 'var', 
-              params = c('beta1', 'gamma'))
-
-# Plot the emulator implausibility for the number of infectious people at t=200 in the (beta1,gamma)-plane
-emulator_plot(ems_wave1_linear$I200, plot_type = 'imp', targets = targets, 
-              params = c('beta1', 'gamma'), cb=TRUE)
-
-# Increase theta by a factor of three in the linear emulator for the number of infectious people at t=200 
-ems_wave1_linear$I200 <- ems_wave1_linear$I20$set_hyperparams(
-  list(theta=ems_wave1_linear$I200$corr$hyper_p$theta *3))
-# Plot the variance of the modified linear emulator for the number of infectious people at t=200 in the 
-# (beta1,gamma)-plane
-emulator_plot(ems_wave1_linear$I200, plot_type = 'var', 
-              params = c('beta1', 'gamma'))
-
-# Plot the implausibility of the modified linear emulator for the number of infectious people at t=200 in 
-# the (beta1,gamma)-plane
-emulator_plot(ems_wave1_linear$I200, plot_type = 'imp', targets = targets, 
-              params = c('beta1', 'gamma'), cb=TRUE)
-
-
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #############################  10. VISUALISATIONS OF NON-IMPLAUSIBLE SPACE BY WAVE  ###########################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Plot the point locations for each pair of parameters
+wave_points(list(initial_points, new_points, new_new_points), input_names = names(ranges), p_size = 1)
 
 # Show the distribution of the non-implausible space before the wave 1, at the end of wave 1 and at the end of
 # wave 2 using the function `wave_points` (first we train wave 2 emulators, validate them and generate new 
