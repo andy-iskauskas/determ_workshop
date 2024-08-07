@@ -310,85 +310,73 @@ Figure 3.2: Infection rate graph
 <span id="cb2-10"><a href="intro.html#cb2-10" tabindex="-1"></a>solution <span class="ot">&lt;-</span> <span class="fu">ode_results</span>(example_params)</span>
 <span id="cb2-11"><a href="intro.html#cb2-11" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
 <span id="cb2-12"><a href="intro.html#cb2-12" tabindex="-1"></a><span class="fu">plot</span>(solution)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/set-example-params-1.png" style="display: block; margin: auto;" /></p>
 <div class="panel panel-default">
 <div class="panel-heading">
 Task
 </div>
 <div class="panel-body">
 <p>If you would like, familiarise yourself with the model. Investigate how the plots change as you change the values of the parameters.</p>
-<p><infobutton id="displayTextunnamed-chunk-77" onclick="javascript:toggle('unnamed-chunk-77');">Show: R tip</infobutton></p>
-<div id="toggleTextunnamed-chunk-77" style="display: none">
+<p><infobutton id="displayTextunnamed-chunk-47" onclick="javascript:toggle('unnamed-chunk-47');">Show: R tip</infobutton></p>
+<div id="toggleTextunnamed-chunk-47" style="display: none">
 <div class="panel panel-default">
 <div class="panel-body">
-<p>Copy the code below, modify the value of (some) parameters and run it.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="intro.html#cb3-1" tabindex="-1"></a>example_params <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb3-2"><a href="intro.html#cb3-2" tabindex="-1"></a>  <span class="at">b =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">60</span><span class="sc">*</span><span class="dv">365</span>),</span>
-<span id="cb3-3"><a href="intro.html#cb3-3" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">76</span><span class="sc">*</span><span class="dv">365</span>),</span>
-<span id="cb3-4"><a href="intro.html#cb3-4" tabindex="-1"></a>  <span class="at">beta1 =</span> <span class="fl">0.2</span>, <span class="at">beta2 =</span> <span class="fl">0.1</span>, <span class="at">beta3 =</span> <span class="fl">0.3</span>,</span>
-<span id="cb3-5"><a href="intro.html#cb3-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.13</span>,</span>
-<span id="cb3-6"><a href="intro.html#cb3-6" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.01</span>,</span>
-<span id="cb3-7"><a href="intro.html#cb3-7" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="fl">0.08</span>,</span>
-<span id="cb3-8"><a href="intro.html#cb3-8" tabindex="-1"></a>  <span class="at">omega =</span> <span class="fl">0.003</span></span>
-<span id="cb3-9"><a href="intro.html#cb3-9" tabindex="-1"></a>)</span>
-<span id="cb3-10"><a href="intro.html#cb3-10" tabindex="-1"></a>solution <span class="ot">&lt;-</span> <span class="fu">ode_results</span>(example_params)</span>
-<span id="cb3-11"><a href="intro.html#cb3-11" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb3-12"><a href="intro.html#cb3-12" tabindex="-1"></a><span class="fu">plot</span>(solution)</span></code></pre></div>
+
 </div>
 </div>
 </div>
 </div>
 </div>
-<button id="displayTextunnamed-chunk-9" onclick="javascript:toggle(&#39;unnamed-chunk-9&#39;);">
+<button id="displayTextunnamed-chunk-8" onclick="javascript:toggle(&#39;unnamed-chunk-8&#39;);">
 Show: Solution
 </button>
-<div id="toggleTextunnamed-chunk-9" style="display: none">
+<div id="toggleTextunnamed-chunk-8" style="display: none">
 <div class="panel panel-default">
 <div class="panel-heading panel-heading1">
 Solution
 </div>
 <div class="panel-body">
 <p>Let us see what happens when a higher force of infection is considered:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="intro.html#cb4-1" tabindex="-1"></a>higher_foi_params <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="intro.html#cb3-1" tabindex="-1"></a>higher_foi_params <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb3-2"><a href="intro.html#cb3-2" tabindex="-1"></a>  <span class="at">b =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">60</span><span class="sc">*</span><span class="dv">365</span>),</span>
+<span id="cb3-3"><a href="intro.html#cb3-3" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">76</span><span class="sc">*</span><span class="dv">365</span>),</span>
+<span id="cb3-4"><a href="intro.html#cb3-4" tabindex="-1"></a>  <span class="at">beta1 =</span> <span class="fl">0.3</span>, <span class="at">beta2 =</span> <span class="fl">0.1</span>, <span class="at">beta3 =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-5"><a href="intro.html#cb3-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.13</span>,</span>
+<span id="cb3-6"><a href="intro.html#cb3-6" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.01</span>,</span>
+<span id="cb3-7"><a href="intro.html#cb3-7" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="fl">0.08</span>,</span>
+<span id="cb3-8"><a href="intro.html#cb3-8" tabindex="-1"></a>  <span class="at">omega =</span> <span class="fl">0.003</span></span>
+<span id="cb3-9"><a href="intro.html#cb3-9" tabindex="-1"></a>)</span>
+<span id="cb3-10"><a href="intro.html#cb3-10" tabindex="-1"></a>higher_foi_solution <span class="ot">&lt;-</span> <span class="fu">ode_results</span>(higher_foi_params)</span>
+<span id="cb3-11"><a href="intro.html#cb3-11" tabindex="-1"></a><span class="fu">plot</span>(solution, higher_foi_solution)</span></code></pre></div>
+<p><img src="_main_files/figure-html/higher-beta-1.png" style="display: block; margin: auto;" /></p>
+<p>Here the black line shows the model output when it is run using the original parameters and the red dotted line when it is run using a higher force of infection. As expected, the number of susceptible individuals decreases, while the size of outbreaks increases.</p>
+<p>Let us now also increase the rate of becoming infectious following infection <span class="math inline">\(\epsilon\)</span>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="intro.html#cb4-1" tabindex="-1"></a>higher_epsilon_params <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb4-2"><a href="intro.html#cb4-2" tabindex="-1"></a>  <span class="at">b =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">60</span><span class="sc">*</span><span class="dv">365</span>),</span>
 <span id="cb4-3"><a href="intro.html#cb4-3" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">76</span><span class="sc">*</span><span class="dv">365</span>),</span>
 <span id="cb4-4"><a href="intro.html#cb4-4" tabindex="-1"></a>  <span class="at">beta1 =</span> <span class="fl">0.3</span>, <span class="at">beta2 =</span> <span class="fl">0.1</span>, <span class="at">beta3 =</span> <span class="fl">0.5</span>,</span>
-<span id="cb4-5"><a href="intro.html#cb4-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.13</span>,</span>
+<span id="cb4-5"><a href="intro.html#cb4-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.21</span>,</span>
 <span id="cb4-6"><a href="intro.html#cb4-6" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.01</span>,</span>
 <span id="cb4-7"><a href="intro.html#cb4-7" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="fl">0.08</span>,</span>
 <span id="cb4-8"><a href="intro.html#cb4-8" tabindex="-1"></a>  <span class="at">omega =</span> <span class="fl">0.003</span></span>
 <span id="cb4-9"><a href="intro.html#cb4-9" tabindex="-1"></a>)</span>
-<span id="cb4-10"><a href="intro.html#cb4-10" tabindex="-1"></a>higher_foi_solution <span class="ot">&lt;-</span> <span class="fu">ode_results</span>(higher_foi_params)</span>
-<span id="cb4-11"><a href="intro.html#cb4-11" tabindex="-1"></a><span class="fu">plot</span>(solution, higher_foi_solution)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-84-1.png" style="display: block; margin: auto;" /></p>
-<p>Here the black line shows the model output when it is run using the original parameters and the red dotted line when it is run using a higher force of infection. As expected, the number of susceptible individuals decreases, while the size of outbreaks increases.</p>
-<p>Let us now also increase the rate of becoming infectious following infection <span class="math inline">\(\epsilon\)</span>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="intro.html#cb5-1" tabindex="-1"></a>higher_epsilon_params <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-10"><a href="intro.html#cb4-10" tabindex="-1"></a>higher_epsilon_solution <span class="ot">&lt;-</span> <span class="fu">ode_results</span>(higher_epsilon_params)</span>
+<span id="cb4-11"><a href="intro.html#cb4-11" tabindex="-1"></a><span class="fu">plot</span>(higher_foi_solution,higher_epsilon_solution)</span></code></pre></div>
+<p><img src="_main_files/figure-html/higher-epsilon-1.png" style="display: block; margin: auto;" /></p>
+<p>Here the black line is the model output when the model is run with the previous parameter set, and the red dotted line is the model output when we also increase epsilon. We observe a decrease in the number of exposed individuals. Again, this is in agreement with our expectation: a higher rate of becoming infectious means that people leave the exposed compartmental to enter the infectious compartment faster than before.</p>
+<p>Finally, what happens when a lower value of the recovery rate <span class="math inline">\(\gamma\)</span> is used?</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="intro.html#cb5-1" tabindex="-1"></a>smaller_recovery_params <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb5-2"><a href="intro.html#cb5-2" tabindex="-1"></a>  <span class="at">b =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">60</span><span class="sc">*</span><span class="dv">365</span>),</span>
 <span id="cb5-3"><a href="intro.html#cb5-3" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">76</span><span class="sc">*</span><span class="dv">365</span>),</span>
 <span id="cb5-4"><a href="intro.html#cb5-4" tabindex="-1"></a>  <span class="at">beta1 =</span> <span class="fl">0.3</span>, <span class="at">beta2 =</span> <span class="fl">0.1</span>, <span class="at">beta3 =</span> <span class="fl">0.5</span>,</span>
 <span id="cb5-5"><a href="intro.html#cb5-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.21</span>,</span>
 <span id="cb5-6"><a href="intro.html#cb5-6" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.01</span>,</span>
-<span id="cb5-7"><a href="intro.html#cb5-7" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="fl">0.08</span>,</span>
+<span id="cb5-7"><a href="intro.html#cb5-7" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="fl">0.05</span>,</span>
 <span id="cb5-8"><a href="intro.html#cb5-8" tabindex="-1"></a>  <span class="at">omega =</span> <span class="fl">0.003</span></span>
 <span id="cb5-9"><a href="intro.html#cb5-9" tabindex="-1"></a>)</span>
-<span id="cb5-10"><a href="intro.html#cb5-10" tabindex="-1"></a>higher_epsilon_solution <span class="ot">&lt;-</span> <span class="fu">ode_results</span>(higher_epsilon_params)</span>
-<span id="cb5-11"><a href="intro.html#cb5-11" tabindex="-1"></a><span class="fu">plot</span>(higher_foi_solution,higher_epsilon_solution)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-85-1.png" style="display: block; margin: auto;" /></p>
-<p>Here the black line is the model output when the model is run with the previous parameter set, and the red dotted line is the model output when we also increase epsilon. We observe a decrease in the number of exposed individuals. Again, this is in agreement with our expectation: a higher rate of becoming infectious means that people leave the exposed compartmental to enter the infectious compartment faster than before.</p>
-<p>Finally, what happens when a lower value of the recovery rate <span class="math inline">\(\gamma\)</span> is used?</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="intro.html#cb6-1" tabindex="-1"></a>smaller_recovery_params <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb6-2"><a href="intro.html#cb6-2" tabindex="-1"></a>  <span class="at">b =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">60</span><span class="sc">*</span><span class="dv">365</span>),</span>
-<span id="cb6-3"><a href="intro.html#cb6-3" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">76</span><span class="sc">*</span><span class="dv">365</span>),</span>
-<span id="cb6-4"><a href="intro.html#cb6-4" tabindex="-1"></a>  <span class="at">beta1 =</span> <span class="fl">0.3</span>, <span class="at">beta2 =</span> <span class="fl">0.1</span>, <span class="at">beta3 =</span> <span class="fl">0.5</span>,</span>
-<span id="cb6-5"><a href="intro.html#cb6-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.21</span>,</span>
-<span id="cb6-6"><a href="intro.html#cb6-6" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.01</span>,</span>
-<span id="cb6-7"><a href="intro.html#cb6-7" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="fl">0.05</span>,</span>
-<span id="cb6-8"><a href="intro.html#cb6-8" tabindex="-1"></a>  <span class="at">omega =</span> <span class="fl">0.003</span></span>
-<span id="cb6-9"><a href="intro.html#cb6-9" tabindex="-1"></a>)</span>
-<span id="cb6-10"><a href="intro.html#cb6-10" tabindex="-1"></a>smaller_recovery_solution <span class="ot">&lt;-</span> <span class="fu">ode_results</span>(smaller_recovery_params)</span>
-<span id="cb6-11"><a href="intro.html#cb6-11" tabindex="-1"></a><span class="fu">plot</span>(higher_epsilon_solution, smaller_recovery_solution)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-86-1.png" style="display: block; margin: auto;" /></p>
+<span id="cb5-10"><a href="intro.html#cb5-10" tabindex="-1"></a>smaller_recovery_solution <span class="ot">&lt;-</span> <span class="fu">ode_results</span>(smaller_recovery_params)</span>
+<span id="cb5-11"><a href="intro.html#cb5-11" tabindex="-1"></a><span class="fu">plot</span>(higher_epsilon_solution, smaller_recovery_solution)</span></code></pre></div>
+<p><img src="_main_files/figure-html/lower-recovery-1.png" style="display: block; margin: auto;" /></p>
 Here the black line is the model output when the model is run with the previous parameter set, and the red dotted line is the model output when we also decrease the recovery rate. Again, as one expects, this causes the number of susceptible individuals to decrease and the number of infectious individuals to increase, at least during the first peak.
 </div>
 </div>

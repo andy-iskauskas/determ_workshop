@@ -77,7 +77,7 @@ Before starting the tutorial, you will need to run the code contained in the box
 
 ```{info, title="Code to load relevant libraries and helper functions"}
 
-``{r, eval=F}
+``{r, helper-functions, eval=F}
 library(hmer)
 library(deSolve)
 library(ggplot2)
@@ -227,7 +227,7 @@ knitr::include_graphics('images/infection_rate.png')
 
 In order to obtain the solution of the differential equations for a given set of parameters, we will use a helper function, `ode_results` (which is defined in the R-script). The function assumes an initial population of 900 susceptible individuals, 100 exposed individuals, and no infectious or recovered individuals. Below we use `ode_results` with an example set of parameters and plot the model output over time.
 
-```{r, fig.height=10, fig.width=10}
+```{r, set-example-params, fig.height=10, fig.width=10}
 example_params <- c(
   b = 1/(60*365),
   mu = 1/(76*365),
@@ -242,7 +242,7 @@ par(mar = c(2, 2, 2, 2))
 plot(solution)
 ```
 
-```{r, rtip1, eval = FALSE, echo = FALSE}
+```{r, example-tip, rtip1, eval = FALSE, echo = FALSE}
 Copy the code below, modify the value of (some) parameters and run it.
 
 ``{r, eval = FALSE}
@@ -274,7 +274,7 @@ If you would like, familiarise yourself with the model. Investigate how the plot
 ```{solution}
 Let us see what happens when a higher force of infection is considered:
 
-``{r, fig.height=8, fig.width=8}
+``{r, higher-beta, fig.height=8, fig.width=8}
 higher_foi_params <- c(
   b = 1/(60*365),
   mu = 1/(76*365),
@@ -292,7 +292,7 @@ Here the black line shows the model output when it is run using the original par
 
 Let us now also increase the rate of becoming infectious following infection $\epsilon$:
 
-``{r, fig.height=8, fig.width=8}
+``{r, higher-epsilon, fig.height=8, fig.width=8}
 higher_epsilon_params <- c(
   b = 1/(60*365),
   mu = 1/(76*365),
@@ -311,7 +311,7 @@ Here the black line is the model output when the model is run with the previous 
 
 Finally, what happens when a lower value of the recovery rate $\gamma$ is used?
 
-``{r, fig.height=8, fig.width=8}
+``{r, lower-recovery, fig.height=8, fig.width=8}
 smaller_recovery_params <- c(
   b = 1/(60*365),
   mu = 1/(76*365),
@@ -338,7 +338,7 @@ In this section we set up the emulation task, defining the input parameter range
 For the sake of clarity, in this workshop we will adopt the word 'data' only when referring to the set of runs of the model that are used to train emulators. Real-world observations, that inform our choice of targets, will instead be referred to as 'observations'.
 Before we tackle the emulation, we need to define some objects. First of all, let us set the parameter ranges:
 
-```{r}
+```{r, set-ranges}
 ranges = list(
   b = c(1e-5, 1e-4), # birth rate
   mu = c(1e-5, 1e-4), # rate of death from other causes
@@ -354,7 +354,7 @@ ranges = list(
 
 We then turn to the targets we will match: the number of infectious individuals $I$ and the number of recovered individuals $R$ at times $t=25, 40, 100, 200, 200, 350$. The targets can be specified by a pair (val, sigma), where ‘val’ represents the measured value of the output and ‘sigma’ represents its standard deviation, or by a pair (min, max), where min represents the lower bound and max the upper bound for the target. Here we will use the former formulation (an example using the latter formulation can be found in [Workshop 2](https://andy-iskauskas.github.io/stoch_workshop/index.html)): 
 
-```{r}
+```{r, set-targets}
 targets <- list(
   I25 = list(val = 115.88, sigma = 5.79),
   I40 = list(val = 137.84, sigma = 6.89),
@@ -376,7 +376,7 @@ The 'sigmas' in our `targets` list represent the uncertainty we have about the o
 ```{info, title="More on how targets were set"}
 
 Since our model is synthetic, we have no observations with which to define our targets. Instead, we chose the parameter set 
-``{r}
+``{r, set-chosen}
 chosen_params <- list(b = 1/(76*365), mu = 1/(76*365), beta1 = 0.214, 
                       beta2 = 0.107, beta3 = 0.428, epsilon = 1/7, alpha = 1/50, gamma = 1/14, omega = 1/365)
 ``
@@ -400,7 +400,7 @@ knitr::include_graphics('images/LHS.png')
 
 Through the function `maximinLHS` in the package `lhs` we create a hyper-cube design with 90 (10 times the number of parameters) parameter sets for the training set and one with 90 parameter sets for the validation set. After creating the two hyper-cube designs, we bind them together to create `initial_LHS`:
 
-```{r}
+```{r, create-lhs}
 initial_LHS_training <- maximinLHS(90, 9)
 initial_LHS_validation <- maximinLHS(90, 9)
 initial_LHS <- rbind(initial_LHS_training, initial_LHS_validation)
@@ -408,7 +408,7 @@ initial_LHS <- rbind(initial_LHS_training, initial_LHS_validation)
 
 Note that in `initial_LHS` each parameter is distributed on $[0,1]$. This is not exactly what we need, since each parameter has a different range. We therefore re-scale each component in `initial_LHS` multiplying it by the difference between the upper and lower bounds of the range of the  corresponding parameter and then we add the lower bound for that parameter. In this way we obtain `initial_points`, which contains parameter values in the correct ranges. 
 
-```{r}
+```{r, create-initial-design}
 initial_points <- setNames(data.frame(t(apply(initial_LHS, 1, 
                   function(x) x*unlist(lapply(ranges, function(x) x[2]-x[1])) + 
                   unlist(lapply(ranges, function(x) x[1]))))), names(ranges))
@@ -417,14 +417,14 @@ initial_points <- setNames(data.frame(t(apply(initial_LHS, 1,
 
 We then run the model for the parameter sets in `initial_points` through the `get_results` function. This is a helper function that acts as `ode_results`, but has the additional feature of allowing us to decide which outputs and times should be returned: in our case we need the values of $I$ and $R$ at $t=25, 40, 100, 200, 300, 350$.
 
-```{r}
+```{r, initial-results}
 initial_results <- setNames(data.frame(t(apply(initial_points, 1, get_results, 
                    c(25, 40, 100, 200, 300, 350), c('I', 'R')))), names(targets))
 ```
 
 Finally, we bind the parameter sets `initial_points` to the model runs `initial_results` and save everything in the data.frame `wave0`: 
 
-```{r}
+```{r, make-wave0}
 wave0 <- cbind(initial_points, initial_results)
 ```
 
@@ -439,7 +439,7 @@ This section will start with a short recap on the structure of an emulator. We w
 
 For later use, we start by splitting `wave0` in two parts: the training set (the first half), on which we will train the emulators, and a validation set (the second half), which will be used to do diagnostics of the emulators. 
 
-```{r}
+```{r, train-test-split}
 training <- wave0[1:90,]
 validation <- wave0[91:180,]
 ```
@@ -512,7 +512,7 @@ The good news is that we don't have to: hmer has a function for that. The `emula
 
 If you want to persuade yourself that no magic has been performed here, the dataset used is generated below along with code to create an emulator. Note that `emulator_from_data` does not 'see' the function itself: only the ten evaluated points.
 
-``{r}
+``{r, example-onedim}
 func <- function(x) 2*x + 3*x*sin(5*pi*(x-0.1)/0.4)
 pts <- seq(0.05, 0.5, by = 0.05)
 output <- sapply(pts, func)
@@ -534,14 +534,14 @@ The value $0.55$ was chosen using the Durham heuristics, which states that the c
 ```
 
 
-```{r}
+```{r, make-wave1}
 ems_wave1 <- emulator_from_data(training, names(targets), ranges, 
                                 specified_priors = list(hyper_p = rep(0.55, length(targets))))
 ```
 
 In `ems_wave1` we have information about all emulators. Let us take a look at the emulator of the number of recovered individuals at time $t=40$:
 
-```{r}
+```{r, em-output}
 ems_wave1$R40
 ```
 
@@ -556,7 +556,7 @@ The print statement provides an overview of the emulator specifications, which r
 We can also plot the emulators to see how they represent the output space: the `emulator_plot` function does this for emulator expectation (default option), variance, standard deviation, and implausibility.
 The emulator expectation plots show the structure of the regression surface, which is at most quadratic in its parameters, through a 2D slice of the input space. 
 
-```{r fig.width = 9, fig.height = 7}
+```{r, plot-em, fig.width = 9, fig.height = 7}
 emulator_plot(ems_wave1$R40, params = c('beta1', 'gamma'))
 ```
 
@@ -576,19 +576,19 @@ To show what variables are active for an emulator 'em' you can access the parame
 ```{solution}
 Let us take a look at the emulators. To show what variables are active for an emulator 'em' we can simply type `em$active_vars`. For example:
   
-``{r}
+``{r, check-actives}
 ems_wave1$R40$active_vars
 ``
 
 shows what variables are active for the $R40$ emulator. Since $\beta_3$ is the fifth parameter (see for example `ranges`), then we can type
 
-``{r}
+``{r, check-actives2}
 ems_wave1$R40$active_vars[5]
 ``
 
 to just focus on $\beta_3$. To look at the role of $\beta_3$ in all emulators at once, we create a logical vector looping through `ems_wave1`:
 
-``{r}
+``{r, check-beta3}
 beta3_role <- logical()
 for (em in ems_wave1) beta3_role <- c(beta3_role, em$active_vars[5])
 names(beta3_role) <- names(ems_wave1)
@@ -600,20 +600,20 @@ Here we see that $\beta_3$ tends to be more active at later times. This is in fa
 
 Looking at what variables are active for different emulators is often an instructive exercise. The code below produces a plot that shows all dependencies at once.
 
-```{r fig.width = 7, fig.height = 7}
+```{r, plot-actives-all, fig.width = 7, fig.height = 7}
 plot_actives(ems_wave1)
 ```
 
 From this table, we can see that `mu` is comparatively inactive for numbers of infected individuals, while `b` and `beta3` do not materially affect the number of recovered people at early times. We can also consider the *strength* of the effect of each variable on each output via the `effect_strength` function. It has a number of options, but here we will just focus on linear contributions by setting `quadratic = FALSE`, and plot the results in a grid similar to the above using `grid.plot = TRUE`.
 
-```{r fig.width = 7, fig.height = 7}
+```{r, check-effect-strength, fig.width = 7, fig.height = 7}
 effect_strength(ems_wave1, plt = TRUE, grid.plot = TRUE, quadratic = FALSE)
 ```
 In this plot, a blue square indicates a positive coefficient (so increasing the parameter increases the outputs) while a red square indicates the opposite; the strength of colour indicates the strength of effect. We can see the effect of the active variables in more detail here: `beta1` and `epsilon` have an appreciable positive effect on early-time infections, while `beta2` takes over this role at later times; `alpha`, on the other hand, dampens the number of infections and recoveries as it increases. These observations accord with our expectations; increase in the transmission rates and rate of infection, while if more individuals die from the disease then fewer will be recovering.
 
 We can also look at the uncertainty of the emulators across the space. As mentioned above, `emulator_plot` can also plot the variance of a given emulator: 
 
-```{r fig.height = 7, fig.width = 10}
+```{r, em-plot-viz, fig.height = 7, fig.width = 10}
 emulator_plot(ems_wave1$R40, plot_type = 'var', params = c('beta1', 'gamma'))
 ```
 
@@ -621,7 +621,7 @@ This plot shows the presence of a training point (purple-blue area on the right)
 
 Now that we have taken a look at the emulator expectation and the emulator variance, we might want to compare the relative contributions of the global and the residual terms to the overall emulator expectation. This can be done simply by examining the adjusted $R^2$ of the regression hyper-surface:
 
-```{r}
+```{r, adj-r-sq}
 summary(ems_wave1$R40$model)$adj.r.squared
 ```
 
@@ -639,7 +639,7 @@ The `emulator_from_data` function allows us to specify the order of polynomial f
 
 ```{solution}
 We could train emulators to each output, but let us just focus on the recovered individuals at $t=40$ here.
-``{r}
+``{r, try-linear-em}
 linear_r40_em <- emulator_from_data(training, c('R40'), ranges, order = 1,
                                     specified_priors = list(hyper_p = c(0.55)))$R40
 summary(linear_r40_em$model)$adj.r.squared
@@ -673,7 +673,7 @@ An important aspect to consider is the choice of cut-off for the implausibility 
 
 For a given emulator, we can plot the implausibility through the function `emulator_plot` by setting `plot_type='imp'`. Note that we also set `cb=TRUE` to ensure that the produced plots are colour blind friendly:
 
-```{r fig.width = 7, fig.height = 6}
+```{r, plot-imp, fig.width = 7, fig.height = 6}
 emulator_plot(ems_wave1$R40, plot_type = 'imp', 
               targets = targets, params = c('beta1', 'gamma'), cb=TRUE)
 ```
@@ -682,7 +682,7 @@ This is a 2D slice through the input space: for a chosen pair $(\bar\beta_1,\bar
 
 Given multiple emulators, we can visualise the implausibility of several emulators at once:
 
-```{r fig.height=7, fig.width= 10}
+```{r, plot-imps, fig.height=7, fig.width= 10}
 emulator_plot(ems_wave1, plot_type = 'imp', 
               targets = targets, params = c('beta1', 'gamma'), cb=TRUE)
 ```
@@ -698,13 +698,13 @@ Explore the functionalities of `emulator_plot` and produce a variety of implausi
 ```{solution}
 Let us start by visualising the maximum implausibility passing all emulators to `emulator_plot` and setting `plot_type='nimp'`:
 
-``{r fig.width = 7, fig.height = 6}
+``{r, plot-nimp, fig.width = 7, fig.height = 6}
 emulator_plot(ems_wave1, plot_type = 'nimp', targets = targets, params = c('beta1', 'gamma'), cb=T)
 ``
 
 This plot shows very high values of the implausibility for most points in the box. During the first few waves of history matching, one can consider second-maximum implausibility, rather than maximum implausibility. This means that instead of requiring the implausibility measure to be under the chosen threshold for all outputs, we allow (at most) one of them to be over it. This approach, which may result in less space cut out during the first few waves, has the advantage of being more conservative, reducing the risk that parts of the input space may be incorrectly cut. The more strict maximum implausibility measure can then be adopted in later waves, when the space to search is considerably smaller than the original input space, and the emulators will be less uncertain. To work with second-maximum implausibility we simply add nth=2 to the previous function call:
 
-``{r fig.width = 7, fig.height = 6}
+``{r, plot-second-imp, fig.width = 7, fig.height = 6}
 emulator_plot(ems_wave1, plot_type = 'nimp', targets = targets, params = c('beta1', 'gamma'), cb=T, nth=2)
 ``
 
@@ -712,7 +712,7 @@ One of the advantages of history matching and emulation is that we are not oblig
 
 We can focus on early times outputs (up to $t=200$), and produce implausibility plots for them:
   
-``{r fig.width = 9, fig.height = 9}
+``{r, restrict-ems, fig.width = 9, fig.height = 9}
 restricted_ems <- ems_wave1[c(1,2,3,4,7,8,9,10)]
 emulator_plot(restricted_ems, plot_type = 'imp', targets = targets, 
               params = c('beta1', 'gamma'), cb=T)
@@ -720,7 +720,7 @@ emulator_plot(restricted_ems, plot_type = 'imp', targets = targets,
 
 Finally let us set the unshown parameters to be as in `chosen_params`:
 
-``{r fig.width = 7, fig.height = 7}
+``{r, plot-restricted-ems, fig.width = 7, fig.height = 7}
 emulator_plot(restricted_ems, plot_type = 'nimp', targets = targets[c(1,2,3,4,7,8,9,10)], 
               params = c('beta1', 'gamma'), 
               fixed_vals = chosen_params[!names(chosen_params) %in% c('beta1', 'gamma')], 
@@ -752,7 +752,7 @@ The discussion below is very useful for understanding *why* emulators are not pe
 If any of these checks flag possible issues, it makes the appropriate adjustments to the emulator structure; if it still cannot produce a good emulator after these changes, it discards that output.
 
 For our example, we can use this with the following command:
-``{r, eval = FALSE}
+``{r, diag-pass, eval = FALSE}
 adjusted_ems_wave1 <- diagnostic_pass(ems_wave1, targets, validation, verbose = TRUE)
 ``
 
@@ -768,12 +768,12 @@ For a given set of emulators, we want to assess how accurately they reflect the 
 
 The function `validation_diagnostics` provides us with three diagnostics, addressing the three questions above. We will focus on the output `R200` to demonstrate some common features.
 
-```{r fig.width = 9, fig.height = 3, eval=F}
+```{r, valid-diag-single, fig.width = 9, fig.height = 3, eval=F}
 vd <- validation_diagnostics(ems_wave1$R200, validation = validation, targets = targets, plt=TRUE,
                              row = 1)
 ```
 
-```{r fig.width = 10, fig.height = 3.5, echo=F}
+```{r, valid-diag-explicit, fig.width = 10, fig.height = 3.5, echo=F}
 op <- par(mfrow = c(1, 3))
 cd <- comparison_diag(ems_wave1$R200, validation = validation, targets = targets, plt=TRUE)
 ce <- classification_diag(ems_wave1$R200, validation = validation, targets =targets, plt=TRUE)
@@ -808,13 +808,13 @@ $$\sigma^2 \left[(1-\delta) c(x,x^{\prime}) + \delta I_{\{x=x^\prime\}}\right].$
 The lower the value of $\sigma$, the more 'certain' the emulator will be. This means that when an emulator is a little too overconfident (as in our case above), we can try increasing $\sigma$. Below we train a new emulator setting $\sigma$ to be 2 times as much as its default value, through the method `mult_sigma`:
 
 
-```{r fig.width = 10, fig.height = 10, eval=F}
+```{r, modify-sigma, fig.width = 10, fig.height = 10, eval=F}
 sigmadoubled_emulator <- ems_wave1$R200$mult_sigma(2)
 vd <- validation_diagnostics(sigmadoubled_emulator, 
                              validation = validation, targets = targets, plt=TRUE)
 ```
 
-```{r fig.width = 10, fig.height = 3.5, echo=F}
+```{r, modify-sigma2, fig.width = 10, fig.height = 3.5, echo=F}
 sigmadoubled_emulator <- ems_wave1$R200$mult_sigma(2)
 op <- par(mfrow = c(1, 3))
 cd <- comparison_diag(sigmadoubled_emulator, validation = validation, targets = targets, plt=TRUE)
@@ -840,13 +840,13 @@ If `em` is an emulator, you can change its sigma by a factor x through the follo
 
 Let us set $\sigma$ to be ten times smaller than its default value:
   
-``{r fig.width = 10, fig.height = 10, eval=F}
+``{r, explore-sigma, fig.width = 10, fig.height = 10, eval=F}
 tinysigma_emulator <- ems_wave1$R200$mult_sigma(0.1)
 vd <- validation_diagnostics(tinysigma_emulator, validation = validation, targets = targets, 
                              plt=TRUE)
 ``
 
-``{r fig.width = 10, fig.height = 3.5, echo=F}
+``{r, explore-sigma2, fig.width = 10, fig.height = 3.5, echo=F}
 tinysigma_emulator <- ems_wave1$R200$mult_sigma(0.1)
 op <- par(mfrow = c(1, 3))
 cd <- comparison_diag(tinysigma_emulator, validation = validation, targets = targets, plt=TRUE)
@@ -859,13 +859,13 @@ In this case we built a very overconfident emulator. This is shown by the very s
 
 Let us now set $\sigma$ to be ten times larger than its default value: 
   
-``{r fig.width = 10, fig.height = 10, eval=F}
+``{r, big-sigma, fig.width = 10, fig.height = 10, eval=F}
 hugesigma_emulator <- ems_wave1$R200$mult_sigma(10)
 vd <- validation_diagnostics(hugesigma_emulator, validation = validation, targets = targets,
                              plt=TRUE)
 ``
 
-``{r fig.width = 10, fig.height = 3.5, echo=F}
+``{r, big-sigma2, fig.width = 10, fig.height = 3.5, echo=F}
 hugesigma_emulator <- ems_wave1$R200$mult_sigma(10)
 op <- par(mfrow = c(1, 3))
 cd <- comparison_diag(hugesigma_emulator, validation = validation, targets = targets, plt=TRUE)
@@ -915,7 +915,7 @@ knitr::include_graphics('images/FinalSamp.png')
 
 Let us generate $180$ new sets of parameters, using the emulators for the time up to $t=200$. Focusing on early time outputs can be useful when performing the first waves of history matching, since the behaviour of the epidemic at later times  for later times will depend on the behaviour at earlier times. Note that the generation of new points might require a few minutes.
 
-```{r fig.width = 9, fig.height = 9}
+```{r, gen-new-points, fig.width = 9, fig.height = 9}
 restricted_ems <- ems_wave1[c(1,2,3,4,7,8,9,10)]
 new_points_restricted <- generate_new_design(restricted_ems, 180, targets, verbose=TRUE)
 ```
@@ -925,7 +925,7 @@ Note that, depending on the complexity of the calibration task, a Latin Hyper-cu
 We now plot `new_points_restricted` through `plot_wrap`. Note that we pass `ranges` too to `plot_wrap` to ensure that 
 the plot shows the entire range for each parameter: this allows us to see how the new set of parameters compares with respect to the original input space.
 
-```{r fig.width = 9, fig.height = 9}
+```{r, plot-new-points, fig.width = 9, fig.height = 9}
 plot_wrap(new_points_restricted, ranges)
 ``` 
      
@@ -952,7 +952,7 @@ What do you think would happen if we tried generating new parameter sets using a
 ```{solution}
 We expect that using all emulators (instead of just a subset of them) will make the non-implausible space smaller than before, since more conditions will have to be met.  Let us check if our intuition corresponds to what the plots show:
   
-``{r, fignewpts, fig.width = 9, fig.height = 9}
+``{r, gen-new-points-all, fignewpts, fig.width = 9, fig.height = 9}
 new_points <- generate_new_design(ems_wave1, 180, targets, verbose = TRUE)
 plot_wrap(new_points, ranges)
 ``
@@ -961,7 +961,7 @@ The answer is yes: points now look slightly less spread than before, i.e. a high
 
 In order to quantify how much of the input space is removed by a given set of emulators, we can use the function `space_removed`, which takes a list of emulators and a list of targets we want to match to. The output is a plot that shows the percentage of space that is removed by the emulators as a function of the implausibility cut-off. Note that here we also set the argument `ppd`, which determines the number of points per input dimension to sample at. In this workshop we have $9$ parameters, so a `ppd` of $3$ means that `space_removed` will test the emulators on $3^9$ sets of parameters.
 
-```{r fig.width = 10, fig.height = 8}
+```{r, space-rem, fig.width = 10, fig.height = 8}
 space_removed(ems_wave1, targets, ppd=3) + geom_vline(xintercept = 3, lty = 2) + 
   geom_text(aes(x=3, label="x = 3",y=0.33), colour="black", 
   angle=90, vjust = 1.2, text=element_text(size=11))
@@ -982,26 +982,26 @@ Now that we have learnt how to customise the various steps of the process, try t
 ```{solution}
 First of all let us take a look at the diagnostics of all the emulators trained in wave 1:
   
-``{r fig.height = 10, fig.width = 10}
+``{r, task-diag, fig.height = 10, fig.width = 10}
 vd <- validation_diagnostics(ems_wave1, validation = validation, targets = targets, plt=TRUE)
 ``
 
 Most emulators would benefit from having slightly more conservative emulators, which we can obtain by increasing $\sigma$. After some trial and error, we chose the following values of sigma for our emulators:
 
-``{r fig.height = 10, fig.width = 10}
+``{r, task-inflate, fig.height = 10, fig.width = 10}
 inflations <- c(1.5,1.5,1,1,1,1,1.5,1.5,2,2,1.5,2)
 for (i in 1:length(ems_wave1)) {
   ems_wave1[[i]] <- ems_wave1[[i]]$mult_sigma(inflations[[i]])
 }
 ``
 
-``{r fig.height = 10, fig.width = 10}
+``{r, task-new-valid, fig.height = 10, fig.width = 10}
 vd <- validation_diagnostics(ems_wave1, validation = validation, targets = targets, plt=TRUE)
 ``
 
 The diagnostics look good now. Note that a high increase in sigma, which is sometimes needed to pass diagnostics, may end up producing an emulator that cuts (almost) no space out. This can be checked by looking at the middle diagnostic: if (almost) no validation point has implausiblity above three, then it is advisable not to include the emulator when generating new points. This will avoid adding unnecessary calculations and will not affect the amount of space cut out at that wave. In our specific case, all emulators are contributing to shrinking the space down, so we will include all of them when generating new points:
 
-``{r fig.height = 10, fig.width = 10}
+``{r, task-gen-new, fig.height = 10, fig.width = 10}
 new_points <- generate_new_design(ems_wave1, 180, targets, verbose = TRUE)
 plot_wrap(new_points, ranges)
 ``
@@ -1056,7 +1056,7 @@ Using `new_points` and setting `check.ranges` to `TRUE`, train new emulators. Pe
 
 ```{solution}
 We start by evaluating the function `get_results` on `new_points`. In other words, we run the model using the parameter sets we generated at the end of wave 1:
-``{r}
+``{r, new-results}
 new_initial_results <- setNames(data.frame(t(apply(new_points, 1, get_results, 
                                                c(25, 40, 100, 200, 300, 350), c('I', 'R')))), 
                                 names(targets))
@@ -1064,13 +1064,13 @@ new_initial_results <- setNames(data.frame(t(apply(new_points, 1, get_results,
 
 and then binding `new_points` to the model runs `new_initial_results` to create the data.frame `wave1`, containing the input parameter sets and model outputs:
 
-``{r}
+``{r, new-wave}
 wave1 <- cbind(new_points, new_initial_results)
 ``
 
 We split `wave1` into training and validation sets
  
-``{r}
+``{r, new-train-test}
 new_t_sample <- sample(1:nrow(wave1), 90)
 new_training <- wave1[new_t_sample,]
 new_validation <- wave1[-new_t_sample,]
@@ -1078,44 +1078,44 @@ new_validation <- wave1[-new_t_sample,]
  
 and train wave two emulators on the space defined by `new_ranges`: 
 
-``{r}
+``{r, ems-wave2}
 ems_wave2 <- emulator_from_data(new_training, names(targets), ranges, 
                                 check.ranges=TRUE,
                                 specified_priors = list(hyper_p = rep(0.55, length(targets))))
 ``  
 Let us check their diagnostics:
   
-``{r fig.width = 10, fig.height = 10}
+``{r, wave2-diag, fig.width = 10, fig.height = 10}
 vd <- validation_diagnostics(ems_wave2, validation = new_validation, targets = targets, 
                              plt=TRUE)
 ``
  
 We will use the automated diagnostic pass to modify these emulators:
   
-``{r}
+``{r, wave2-diag-pass}
 ems_wave2_new <- diagnostic_pass(ems_wave2, targets = targets, validation = new_validation, verbose = TRUE)
 ``
 
 Note that the automated diagnostics have performed some variance inflation, as for instance we can see with the `I100` output:
 
-  ``{r fig.height = 7, fig.width = 7}
+  ``{r, wave2-plot, fig.height = 7, fig.width = 7}
     vdiag <- validation_diagnostics(list(I100 = ems_wave2$I100, I100 = ems_wave2_new$I100), targets = targets, validation = new_validation, plt = TRUE)
   ``
 
 It has also seen fit to remove quite a few of the emulators, since they cannot be easily modified automatically. We can look at these emulators to see if the automated process has been overly conservative, or if we even need to worry about emulating the output. *Note that it is fine to simply apply `diagnostic_pass` and use the emulators it produces: they may be more conservative than the emulators we would obtain by hand and thus rule out less of the parameter region, but they remain valid emulators for using in `generate_new_design`.
   
 * `I200`: The validation plots look ok; there are some comparison diagnostic issues but nothing significant. We will include this as-is.
-  ``{r}
+  ``{r, do-nothing}
     ems_wave2_new$I200 <- ems_wave2$I200
   ``
 
 * `I300`: We might be concerned about the classification diagnostic issue, since the emulator is predicting an implausibility around $7$ when the simulator implausibility is $\sim3$. However, this is only an issue if that point (and its neighbourhood) would not be ruled out anyway (remember that these are univariate implausibilities). We can identify the point and look at the implausibility across all the 'good' emulators, using `classification_diag` directly to just perform the diagnostic we want. 
-  ``{r}
+  ``{r, check-bad-pts}
     which_pts <- row.names(classification_diag(ems_wave2$I300, targets = targets, validation = new_validation))
     nth_implausible(ems_wave2_new, new_validation[which_pts,], targets, n = 1)
   ``
 The point is unsuitable for matching to the data anyway, since the implausibility across the other emulators is above $5$, so we are unconcerned about this emulator and can include it as we did for `I200`.
-  ``{r}
+  ``{r, do-nothing2}
   ems_wave2_new$I300 <- ems_wave2$I300
   ``
 
@@ -1124,19 +1124,19 @@ The point is unsuitable for matching to the data anyway, since the implausibilit
 * `R25`, `R100`, `R200`: The classification diagnostics show that, even were we to spend some time improving these emulators, they are very unlikely to rule out any space at all. In particular, there are few or no points above simulator implausibility $3$, so a more restrictive emulator is not going to be able to rule out more space without risking being overly restrictive. We can therefore leave these emulators out at this wave.
   
 * `R350`: It looks like this would be improved by inflating the variance. We can do just that quite simply, with a bit of trial-and-error.
-  ``{r}
+  ``{r, mult-sigma}
   ems_wave2_new$R350 <- ems_wave2$R350$mult_sigma(3)
   ``
     
 Having done this, we can check the diagnostic plots again to ensure the results are acceptable.
 
-``{r fig.width = 10, fig.height = 10}
+``{r, new-validation, fig.width = 10, fig.height = 10}
 vd <- validation_diagnostics(ems_wave2_new, validation = new_validation, targets = targets, plt = TRUE)
 ``
 
 Finally, we propose points to generate the design for the next wave.
   
-``{r fig.width = 9, fig.height = 9}
+``{r, prop-new-points-task, fig.width = 9, fig.height = 9}
 new_new_points <- generate_new_design(c(ems_wave2_new, ems_wave1), 180, targets, verbose=TRUE)
 plot_wrap(new_new_points, ranges)
 ``
@@ -1147,7 +1147,7 @@ This worked well: the new non-implausible region is clearly smaller than the one
 
 As we did for the wave 1 emulators, let us check the values of the adjusted $R^2$ for the new emulators:
 
-```{r}
+```{r, check-r-sq}
 R_squared_new <- list()
 for (i in 1:length(ems_wave2)) {
   R_squared_new[[i]] <- summary(ems_wave2[[i]]$model)$adj.r.squared
@@ -1169,7 +1169,7 @@ In this last section we present three visualisations that can be used to compare
 
 The first visualisation, obtained through the function `wave_points`, shows the distribution of the non-implausible space for the waves of interest. For example, let us plot the distribution of parameter sets at the beginning, at the end of wave one and at the end of wave two:
 
-```{r fig.width = 9, fig.height = 9}
+```{r, wave-points, fig.width = 9, fig.height = 9}
 wave_points(list(initial_points, new_points, new_new_points), input_names = names(ranges), p_size=1)
 ```
 
@@ -1178,7 +1178,7 @@ Here `initial_points` are in yellow, `new_points` are in green and `new_new_poin
 The second visualisation allows us to assess how much better parameter sets at later waves perform compared to the original `initial_points`. Let us first create the dataframe `wave2`:
 
 
-```{r}
+```{r, new-new-pts}
 new_new_initial_results <- setNames(data.frame(t(apply(new_new_points, 1, 
                                     get_results, c(25, 40, 100, 200, 300, 350), 
                                     c('I', 'R')))), names(targets))
@@ -1187,7 +1187,7 @@ wave2 <- cbind(new_new_points, new_new_initial_results)
 
 We now produce the plots using the function `simulator_plot`:
 
-```{r fig.width = 9, fig.height = 9}
+```{r, sim-plot, fig.width = 9, fig.height = 9}
 all_points <- list(wave0, wave1, wave2)
 simulator_plot(all_points, targets)
 ```
@@ -1199,7 +1199,7 @@ In the plot above, some targets are easier to read than others: this is due to t
 ```
 
 ```{solution}
-``{r fig.width = 9, fig.height = 9}
+``{r, sim-plot-task, fig.width = 9, fig.height = 9}
 simulator_plot(all_points, targets, normalize = TRUE)
 simulator_plot(all_points, targets, logscale = TRUE)
 ``
@@ -1208,7 +1208,7 @@ These normalised/logscaled plots allow us to investigate better targets such as 
 
 In the third visualisation, output values for non-implausible parameter sets at each wave are shown for each combination of two outputs: 
 
-```{r fig.width = 9, fig.height = 9}
+```{r, wave-values, fig.width = 9, fig.height = 9}
 wave_values(all_points, targets, l_wid=1, p_size=1)
 ```
 

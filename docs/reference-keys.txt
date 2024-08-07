@@ -8,7 +8,7 @@ fig:onedemsecond
 fig:lhsamp
 fig:linesamp
 fig:impsamp
-fig:unnamed-chunk-42
+fig:unnamed-chunk-21
 objectives
 an-overview-of-history-matching-with-emulation-and-hmer
 intro

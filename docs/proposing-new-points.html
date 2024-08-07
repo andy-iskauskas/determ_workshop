@@ -260,15 +260,15 @@ Figure 8.3: Importance sampling
 </p>
 </div>
 <p>The combination of the three steps above brings to the following final design of non-implausible parameter sets:</p>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-42"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-21"></span>
 <img src="images/FinalSamp.png" alt="Overall design of new non-implausible parameter sets" width="75%" />
 <p class="caption">
 Figure 8.4: Overall design of new non-implausible parameter sets
 </p>
 </div>
 <p>Let us generate <span class="math inline">\(180\)</span> new sets of parameters, using the emulators for the time up to <span class="math inline">\(t=200\)</span>. Focusing on early time outputs can be useful when performing the first waves of history matching, since the behaviour of the epidemic at later times for later times will depend on the behaviour at earlier times. Note that the generation of new points might require a few minutes.</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="proposing-new-points.html#cb47-1" tabindex="-1"></a>restricted_ems <span class="ot">&lt;-</span> ems_wave1[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>)]</span>
-<span id="cb47-2"><a href="proposing-new-points.html#cb47-2" tabindex="-1"></a>new_points_restricted <span class="ot">&lt;-</span> <span class="fu">generate_new_design</span>(restricted_ems, <span class="dv">180</span>, targets, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="proposing-new-points.html#cb46-1" tabindex="-1"></a>restricted_ems <span class="ot">&lt;-</span> ems_wave1[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>)]</span>
+<span id="cb46-2"><a href="proposing-new-points.html#cb46-2" tabindex="-1"></a>new_points_restricted <span class="ot">&lt;-</span> <span class="fu">generate_new_design</span>(restricted_ems, <span class="dv">180</span>, targets, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## Proposing from LHS...
 ## LHS has high yield; no other methods required.
 ## Proposing from LHS...
@@ -276,8 +276,8 @@ Figure 8.4: Overall design of new non-implausible parameter sets
 <p>Note that, depending on the complexity of the calibration task, a Latin Hyper-cube may not be able to find any parameter sets with implausibility below three. If that happens, <code>generate_new_design</code> will perform step 1 (Latin Hyper-cube sampling) at a higher implausibility threshold, to find a space-filling design. Using this as a starting point, step 2 (line sampling) and step 3 (importance sampling) are then performed. From this proposal, a subset of lower-implausibility parameter sets are selected and steps 2 and 3 are repeated. This process iterates until either the desired implausibility has been reached or the process has reached a barrier to further reductions in implausibility.</p>
 <p>We now plot <code>new_points_restricted</code> through <code>plot_wrap</code>. Note that we pass <code>ranges</code> too to <code>plot_wrap</code> to ensure that
 the plot shows the entire range for each parameter: this allows us to see how the new set of parameters compares with respect to the original input space.</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="proposing-new-points.html#cb49-1" tabindex="-1"></a><span class="fu">plot_wrap</span>(new_points_restricted, ranges)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-44-1.png" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="proposing-new-points.html#cb48-1" tabindex="-1"></a><span class="fu">plot_wrap</span>(new_points_restricted, ranges)</span></code></pre></div>
+<p><img src="_main_files/figure-html/plot-new-points-1.png" style="display: block; margin: auto;" /></p>
 <p>By looking at the plot we can learn a lot about the non-implausible space. For example, it seems clear that low values of <span class="math inline">\(\gamma\)</span> cannot produce a match (cf. penultimate column). We can also deduce relationships between parameters: <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\epsilon\)</span> are an example of negatively-correlated parameters. If <span class="math inline">\(\beta_1\)</span> is large then <span class="math inline">\(\epsilon\)</span> needs to be small, and vice versa.</p>
 <p>Now that we have generated a new set of points, we can compare the model output at points in <code>initial_points</code></p>
 <p><img src="images/wave0SEIReval.png" width="75%" style="display: block; margin: auto;" /></p>
@@ -292,34 +292,34 @@ Task
 What do you think would happen if we tried generating new parameter sets using all emulators, instead of those relating to times up to <span class="math inline">\(t=200\)</span> only? Try changing the code and seeing what happens.
 </div>
 </div>
-<button id="displayTextunnamed-chunk-48" onclick="javascript:toggle(&#39;unnamed-chunk-48&#39;);">
+<button id="displayTextunnamed-chunk-25" onclick="javascript:toggle(&#39;unnamed-chunk-25&#39;);">
 Show: Solution
 </button>
-<div id="toggleTextunnamed-chunk-48" style="display: none">
+<div id="toggleTextunnamed-chunk-25" style="display: none">
 <div class="panel panel-default">
 <div class="panel-heading panel-heading1">
 Solution
 </div>
 <div class="panel-body">
 <p>We expect that using all emulators (instead of just a subset of them) will make the non-implausible space smaller than before, since more conditions will have to be met. Let us check if our intuition corresponds to what the plots show:</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="proposing-new-points.html#cb50-1" tabindex="-1"></a>new_points <span class="ot">&lt;-</span> <span class="fu">generate_new_design</span>(ems_wave1, <span class="dv">180</span>, targets, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="proposing-new-points.html#cb49-1" tabindex="-1"></a>new_points <span class="ot">&lt;-</span> <span class="fu">generate_new_design</span>(ems_wave1, <span class="dv">180</span>, targets, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## Proposing from LHS...
 ## LHS has high yield; no other methods required.
 ## Proposing from LHS...
 ## Selecting final points using maximin criterion...</code></pre>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="proposing-new-points.html#cb52-1" tabindex="-1"></a><span class="fu">plot_wrap</span>(new_points, ranges)</span></code></pre></div>
-<img src="_main_files/figure-html/fignewpts-1.png" style="display: block; margin: auto;" />
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="proposing-new-points.html#cb51-1" tabindex="-1"></a><span class="fu">plot_wrap</span>(new_points, ranges)</span></code></pre></div>
+<img src="_main_files/figure-html/gen-new-points-all,%20fignewpts-1.png" style="display: block; margin: auto;" />
 The answer is yes: points now look slightly less spread than before, i.e. a higher part of the input space has been cut-out.
 </div>
 </div>
 </div>
 <p>In order to quantify how much of the input space is removed by a given set of emulators, we can use the function <code>space_removed</code>, which takes a list of emulators and a list of targets we want to match to. The output is a plot that shows the percentage of space that is removed by the emulators as a function of the implausibility cut-off. Note that here we also set the argument <code>ppd</code>, which determines the number of points per input dimension to sample at. In this workshop we have <span class="math inline">\(9\)</span> parameters, so a <code>ppd</code> of <span class="math inline">\(3\)</span> means that <code>space_removed</code> will test the emulators on <span class="math inline">\(3^9\)</span> sets of parameters.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="proposing-new-points.html#cb53-1" tabindex="-1"></a><span class="fu">space_removed</span>(ems_wave1, targets, <span class="at">ppd=</span><span class="dv">3</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">3</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb53-2"><a href="proposing-new-points.html#cb53-2" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="dv">3</span>, <span class="at">label=</span><span class="st">&quot;x = 3&quot;</span>,<span class="at">y=</span><span class="fl">0.33</span>), <span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
-<span id="cb53-3"><a href="proposing-new-points.html#cb53-3" tabindex="-1"></a>  <span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">1.2</span>, <span class="at">text=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="proposing-new-points.html#cb52-1" tabindex="-1"></a><span class="fu">space_removed</span>(ems_wave1, targets, <span class="at">ppd=</span><span class="dv">3</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">3</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb52-2"><a href="proposing-new-points.html#cb52-2" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="dv">3</span>, <span class="at">label=</span><span class="st">&quot;x = 3&quot;</span>,<span class="at">y=</span><span class="fl">0.33</span>), <span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb52-3"><a href="proposing-new-points.html#cb52-3" tabindex="-1"></a>  <span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">1.2</span>, <span class="at">text=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>))</span></code></pre></div>
 <pre><code>## Warning in geom_text(aes(x = 3, label = &quot;x = 3&quot;, y = 0.33), colour = &quot;black&quot;, :
 ## Ignoring unknown parameters: `text`</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-49-1.png" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/space-rem-1.png" style="display: block; margin: auto;" /></p>
 <p>By default the plot shows the percentage of space that is deemed implausible both when the observational errors are exactly the ones in <code>targets</code> and when the observational errors are <span class="math inline">\(80\%\)</span> (resp. <span class="math inline">\(90\%\)</span>, <span class="math inline">\(110\%\)</span> and <span class="math inline">\(120\%\)</span>) of the values in <code>targets</code>. Here we see that with an implausibility cut-off of <span class="math inline">\(3\)</span>, the percentage of space removed is around <span class="math inline">\(98\%\)</span>, when the observational errors are <span class="math inline">\(100\%\)</span> of the values in <code>targets</code>. With the same implausibility cut-off of <span class="math inline">\(3\)</span>, the percentage of space removed goes down to <span class="math inline">\(97\%\)</span>, when the observational errors are <span class="math inline">\(120\%\)</span> of the values in <code>targets</code> and it goes up to <span class="math inline">\(99\%\)</span> when the observational errors are <span class="math inline">\(80\%\)</span> of the values in <code>targets</code>. If instead we use an implausibility cut-off of <span class="math inline">\(5\)</span>, we would discard around <span class="math inline">\(88\%\)</span> (resp. <span class="math inline">\(84\%\)</span>) of the space when the observational errors are <span class="math inline">\(100\%\)</span> of the values in <code>targets</code> (resp. when the observational errors are <span class="math inline">\(120\%\)</span> of the values in <code>targets</code>). As expected, larger observational errors and larger implausibility cut-offs correspond to lower percentages of space removed.</p>
 </div>
             </section>
