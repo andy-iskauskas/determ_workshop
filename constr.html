@@ -238,8 +238,8 @@ div.csl-indent {
 <p>A video presentation of this section can be found <a href="https://youtu.be/6qg5-qQ5j54">here</a>.</p>
 <p>This section will start with a short recap on the structure of an emulator. We will then train the first wave of emulators and explore them through various visualisations. Note that this section is a bit technical: while it is important to grasp the overall picture of how emulators work, it is not crucial that you understand each detail given in here.</p>
 <p>For later use, we start by splitting <code>wave0</code> in two parts: the training set (the first half), on which we will train the emulators, and a validation set (the second half), which will be used to do diagnostics of the emulators.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="constr.html#cb14-1" tabindex="-1"></a>training <span class="ot">&lt;-</span> wave0[<span class="dv">1</span><span class="sc">:</span><span class="dv">90</span>,]</span>
-<span id="cb14-2"><a href="constr.html#cb14-2" tabindex="-1"></a>validation <span class="ot">&lt;-</span> wave0[<span class="dv">91</span><span class="sc">:</span><span class="dv">180</span>,]</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="constr.html#cb13-1" tabindex="-1"></a>training <span class="ot">&lt;-</span> wave0[<span class="dv">1</span><span class="sc">:</span><span class="dv">90</span>,]</span>
+<span id="cb13-2"><a href="constr.html#cb13-2" tabindex="-1"></a>validation <span class="ot">&lt;-</span> wave0[<span class="dv">91</span><span class="sc">:</span><span class="dv">180</span>,]</span></code></pre></div>
 <div id="what-is-an-emulator" class="section level2 hasAnchor" number="5.1">
 <h2><span class="header-section-number">5.1</span> What is an emulator?<a href="constr.html#what-is-an-emulator" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>An emulator, for our purposes, is a statistical surrogate to a complex simulator. More detailed discussions can be found in <span class="citation">Bower, Goldstein, and Vernon (<a href="#ref-bower2010galaxy">2010</a>)</span> and <span class="citation">Vernon et al. (<a href="#ref-vernon2018bayesian">2018</a>)</span>, but we will motivate our discussion with a simple example. At its heart, the problem that emulation solves can be framed as follows:</p>
@@ -305,12 +305,12 @@ Task
 </div>
 <div class="panel-body">
 <p>If you want to persuade yourself that no magic has been performed here, the dataset used is generated below along with code to create an emulator. Note that <code>emulator_from_data</code> does not ‘see’ the function itself: only the ten evaluated points.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="constr.html#cb15-1" tabindex="-1"></a>func <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">2</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>x<span class="sc">*</span><span class="fu">sin</span>(<span class="dv">5</span><span class="sc">*</span>pi<span class="sc">*</span>(x<span class="fl">-0.1</span>)<span class="sc">/</span><span class="fl">0.4</span>)</span>
-<span id="cb15-2"><a href="constr.html#cb15-2" tabindex="-1"></a>pts <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
-<span id="cb15-3"><a href="constr.html#cb15-3" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="fu">sapply</span>(pts, func)</span>
-<span id="cb15-4"><a href="constr.html#cb15-4" tabindex="-1"></a>test_em <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(<span class="at">input_data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> pts, <span class="at">f =</span> output),</span>
-<span id="cb15-5"><a href="constr.html#cb15-5" tabindex="-1"></a>                              <span class="at">output_names =</span> <span class="fu">c</span>(<span class="st">&#39;f&#39;</span>), </span>
-<span id="cb15-6"><a href="constr.html#cb15-6" tabindex="-1"></a>                              <span class="at">ranges =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="constr.html#cb14-1" tabindex="-1"></a>func <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">2</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>x<span class="sc">*</span><span class="fu">sin</span>(<span class="dv">5</span><span class="sc">*</span>pi<span class="sc">*</span>(x<span class="fl">-0.1</span>)<span class="sc">/</span><span class="fl">0.4</span>)</span>
+<span id="cb14-2"><a href="constr.html#cb14-2" tabindex="-1"></a>pts <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb14-3"><a href="constr.html#cb14-3" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="fu">sapply</span>(pts, func)</span>
+<span id="cb14-4"><a href="constr.html#cb14-4" tabindex="-1"></a>test_em <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(<span class="at">input_data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> pts, <span class="at">f =</span> output),</span>
+<span id="cb14-5"><a href="constr.html#cb14-5" tabindex="-1"></a>                              <span class="at">output_names =</span> <span class="fu">c</span>(<span class="st">&#39;f&#39;</span>), </span>
+<span id="cb14-6"><a href="constr.html#cb14-6" tabindex="-1"></a>                              <span class="at">ranges =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>)))</span></code></pre></div>
 As we go through the rest of this workshop, see if you can generate a plot similar to the one above!
 </div>
 </div>
@@ -319,16 +319,16 @@ As we go through the rest of this workshop, see if you can generate a plot simil
 <div id="training-emulators" class="section level2 hasAnchor" number="5.2">
 <h2><span class="header-section-number">5.2</span> Training emulators<a href="constr.html#training-emulators" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>We will now train the emulators using the <code>emulator_from_data</code> function on our actual model, which needs at least the following data: the training set, the names of the targets we want to emulate and the ranges of the parameters. By default, <code>emulator_from_data</code> assumes a square-exponential correlation function and finds suitable values for the variance <span class="math inline">\(\sigma\)</span> and the correlation length <span class="math inline">\(\theta\)</span> of the process <span class="math inline">\(u(x)\)</span>. In this workshop, in order to shorten the time needed to train emulators, we pass one more argument to <code>emulator_from_data</code>, setting the correlation lengths to be <span class="math inline">\(0.55\)</span> for all emulators. Normally, the argument <code>specified_priors</code> will not be needed, since the correlation lengths are determined by the <code>emulator_from_data</code> function itself.</p>
-<p><infobutton id="displayTextunnamed-chunk-19" onclick="javascript:toggle('unnamed-chunk-19');">Show: How was the value 0.55 chosen?</infobutton></p>
-<div id="toggleTextunnamed-chunk-19" style="display: none">
+<p><infobutton id="displayTextunnamed-chunk-11" onclick="javascript:toggle('unnamed-chunk-11');">Show: How was the value 0.55 chosen?</infobutton></p>
+<div id="toggleTextunnamed-chunk-11" style="display: none">
 <div class="panel panel-default">
 <div class="panel-body">
 The value <span class="math inline">\(0.55\)</span> was chosen using the Durham heuristics, which states that the correlation length should lie in the interval <span class="math inline">\([1/(n+1), 2/(n+1)]\)</span> where <span class="math inline">\(n\)</span> is the degree of the fitted surface. In our case <span class="math inline">\(n\)</span> is 2 and therefore the correlation length should be in <span class="math inline">\([1/3,2/3]\)</span>. We chose <span class="math inline">\(0.55\)</span>, a value little above the midpoint of this interval, to represent our belief that the model is smooth (and therefore correlations between neighboring points should be appreciable).
 </div>
 </div>
 </div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="constr.html#cb16-1" tabindex="-1"></a>ems_wave1 <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(training, <span class="fu">names</span>(targets), ranges, </span>
-<span id="cb16-2"><a href="constr.html#cb16-2" tabindex="-1"></a>                                <span class="at">specified_priors =</span> <span class="fu">list</span>(<span class="at">hyper_p =</span> <span class="fu">rep</span>(<span class="fl">0.55</span>, <span class="fu">length</span>(targets))))</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="constr.html#cb15-1" tabindex="-1"></a>ems_wave1 <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(training, <span class="fu">names</span>(targets), ranges, </span>
+<span id="cb15-2"><a href="constr.html#cb15-2" tabindex="-1"></a>                                <span class="at">specified_priors =</span> <span class="fu">list</span>(<span class="at">hyper_p =</span> <span class="fu">rep</span>(<span class="fl">0.55</span>, <span class="fu">length</span>(targets))))</span></code></pre></div>
 <pre><code>## I25 
 ## I40 
 ## I100 
@@ -354,7 +354,7 @@ The value <span class="math inline">\(0.55\)</span> was chosen using the Durham 
 ## R300 
 ## R350</code></pre>
 <p>In <code>ems_wave1</code> we have information about all emulators. Let us take a look at the emulator of the number of recovered individuals at time <span class="math inline">\(t=40\)</span>:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="constr.html#cb18-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="constr.html#cb17-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40</span></code></pre></div>
 <pre><code>## Parameters and ranges:  b: c(0, 1e-04): mu: c(0, 1e-04): beta1: c(0.2, 0.3): beta2: c(0.1, 0.2): beta3: c(0.3, 0.5): epsilon: c(0.07, 0.21): alpha: c(0.01, 0.025): gamma: c(0.05, 0.08): omega: c(0.002, 0.004) 
 ## Specifications: 
 ##   Basis functions:  (Intercept); mu; beta1; beta2; epsilon; alpha; gamma; omega; I(mu^2); I(beta1^2); I(epsilon^2); I(gamma^2); beta1:beta2; beta1:epsilon; beta1:alpha; beta1:gamma; beta2:epsilon; epsilon:alpha; epsilon:gamma; mu:alpha; beta1:omega; epsilon:omega 
@@ -377,8 +377,8 @@ The value <span class="math inline">\(0.55\)</span> was chosen using the Durham 
 </ul>
 <p>We can also plot the emulators to see how they represent the output space: the <code>emulator_plot</code> function does this for emulator expectation (default option), variance, standard deviation, and implausibility.
 The emulator expectation plots show the structure of the regression surface, which is at most quadratic in its parameters, through a 2D slice of the input space.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="constr.html#cb20-1" tabindex="-1"></a><span class="fu">emulator_plot</span>(ems_wave1<span class="sc">$</span>R40, <span class="at">params =</span> <span class="fu">c</span>(<span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;gamma&#39;</span>))</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="constr.html#cb19-1" tabindex="-1"></a><span class="fu">emulator_plot</span>(ems_wave1<span class="sc">$</span>R40, <span class="at">params =</span> <span class="fu">c</span>(<span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;gamma&#39;</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/plot-em-1.png" style="display: block; margin: auto;" /></p>
 <p>Here for each pair <span class="math inline">\((\bar \beta_1,\bar \gamma)\)</span> the plot shows the expected value produced by the emulator <code>ems_wave1$R200</code> at the parameter set having <span class="math inline">\(\beta_1=\bar \beta_1\)</span>, <span class="math inline">\(\gamma=\bar \gamma\)</span> and all other parameters equal to their mid-range value (the ranges of parameters are those that were passed to <code>emulator_from_data</code> to train <code>ems_wave1</code>). Note that we chose to display <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\gamma\)</span>, but any other pair can be selected. For consistency, we will use <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\gamma\)</span> throughout this workshop.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -386,8 +386,8 @@ Task
 </div>
 <div class="panel-body">
 <p>Is <span class="math inline">\(\beta_3\)</span> active for all emulators? Why?</p>
-<p><infobutton id="displayTextunnamed-chunk-116" onclick="javascript:toggle('unnamed-chunk-116');">Show: R tip</infobutton></p>
-<div id="toggleTextunnamed-chunk-116" style="display: none">
+<p><infobutton id="displayTextunnamed-chunk-78" onclick="javascript:toggle('unnamed-chunk-78');">Show: R tip</infobutton></p>
+<div id="toggleTextunnamed-chunk-78" style="display: none">
 <div class="panel panel-default">
 <div class="panel-body">
 <p>To show what variables are active for an emulator ‘em’ you can access the parameter <code>active_vars</code> of the emulator, typing <code>em$active_vars</code>.</p>
@@ -396,26 +396,26 @@ Task
 </div>
 </div>
 </div>
-<button id="displayTextunnamed-chunk-24" onclick="javascript:toggle(&#39;unnamed-chunk-24&#39;);">
+<button id="displayTextunnamed-chunk-13" onclick="javascript:toggle(&#39;unnamed-chunk-13&#39;);">
 Show: Solution
 </button>
-<div id="toggleTextunnamed-chunk-24" style="display: none">
+<div id="toggleTextunnamed-chunk-13" style="display: none">
 <div class="panel panel-default">
 <div class="panel-heading panel-heading1">
 Solution
 </div>
 <div class="panel-body">
 <p>Let us take a look at the emulators. To show what variables are active for an emulator ‘em’ we can simply type <code>em$active_vars</code>. For example:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="constr.html#cb21-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>active_vars</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="constr.html#cb20-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>active_vars</span></code></pre></div>
 <pre><code>## [1] FALSE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE</code></pre>
 <p>shows what variables are active for the <span class="math inline">\(R40\)</span> emulator. Since <span class="math inline">\(\beta_3\)</span> is the fifth parameter (see for example <code>ranges</code>), then we can type</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="constr.html#cb23-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>active_vars[<span class="dv">5</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="constr.html#cb22-1" tabindex="-1"></a>ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>active_vars[<span class="dv">5</span>]</span></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
 <p>to just focus on <span class="math inline">\(\beta_3\)</span>. To look at the role of <span class="math inline">\(\beta_3\)</span> in all emulators at once, we create a logical vector looping through <code>ems_wave1</code>:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="constr.html#cb25-1" tabindex="-1"></a>beta3_role <span class="ot">&lt;-</span> <span class="fu">logical</span>()</span>
-<span id="cb25-2"><a href="constr.html#cb25-2" tabindex="-1"></a><span class="cf">for</span> (em <span class="cf">in</span> ems_wave1) beta3_role <span class="ot">&lt;-</span> <span class="fu">c</span>(beta3_role, em<span class="sc">$</span>active_vars[<span class="dv">5</span>])</span>
-<span id="cb25-3"><a href="constr.html#cb25-3" tabindex="-1"></a><span class="fu">names</span>(beta3_role) <span class="ot">&lt;-</span> <span class="fu">names</span>(ems_wave1)</span>
-<span id="cb25-4"><a href="constr.html#cb25-4" tabindex="-1"></a>beta3_role</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="constr.html#cb24-1" tabindex="-1"></a>beta3_role <span class="ot">&lt;-</span> <span class="fu">logical</span>()</span>
+<span id="cb24-2"><a href="constr.html#cb24-2" tabindex="-1"></a><span class="cf">for</span> (em <span class="cf">in</span> ems_wave1) beta3_role <span class="ot">&lt;-</span> <span class="fu">c</span>(beta3_role, em<span class="sc">$</span>active_vars[<span class="dv">5</span>])</span>
+<span id="cb24-3"><a href="constr.html#cb24-3" tabindex="-1"></a><span class="fu">names</span>(beta3_role) <span class="ot">&lt;-</span> <span class="fu">names</span>(ems_wave1)</span>
+<span id="cb24-4"><a href="constr.html#cb24-4" tabindex="-1"></a>beta3_role</span></code></pre></div>
 <pre><code>##   I25   I40  I100  I200  I300  I350   R25   R40  R100  R200  R300  R350 
 ##  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE</code></pre>
 Here we see that <span class="math inline">\(\beta_3\)</span> tends to be more active at later times. This is in fact what we would expect: the later infection/recovery rates don’t have an impact on early time outputs.
@@ -423,11 +423,11 @@ Here we see that <span class="math inline">\(\beta_3\)</span> tends to be more a
 </div>
 </div>
 <p>Looking at what variables are active for different emulators is often an instructive exercise. The code below produces a plot that shows all dependencies at once.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="constr.html#cb27-1" tabindex="-1"></a><span class="fu">plot_actives</span>(ems_wave1)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="constr.html#cb26-1" tabindex="-1"></a><span class="fu">plot_actives</span>(ems_wave1)</span></code></pre></div>
+<p><img src="_main_files/figure-html/plot-actives-all-1.png" style="display: block; margin: auto;" /></p>
 <p>From this table, we can see that <code>mu</code> is comparatively inactive for numbers of infected individuals, while <code>b</code> and <code>beta3</code> do not materially affect the number of recovered people at early times. We can also consider the <em>strength</em> of the effect of each variable on each output via the <code>effect_strength</code> function. It has a number of options, but here we will just focus on linear contributions by setting <code>quadratic = FALSE</code>, and plot the results in a grid similar to the above using <code>grid.plot = TRUE</code>.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="constr.html#cb28-1" tabindex="-1"></a><span class="fu">effect_strength</span>(ems_wave1, <span class="at">plt =</span> <span class="cn">TRUE</span>, <span class="at">grid.plot =</span> <span class="cn">TRUE</span>, <span class="at">quadratic =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="constr.html#cb27-1" tabindex="-1"></a><span class="fu">effect_strength</span>(ems_wave1, <span class="at">plt =</span> <span class="cn">TRUE</span>, <span class="at">grid.plot =</span> <span class="cn">TRUE</span>, <span class="at">quadratic =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/check-effect-strength-1.png" style="display: block; margin: auto;" /></p>
 <pre><code>##              b        mu      beta1     beta2     beta3    epsilon      alpha
 ## I25  -0.382948  0.157043  31.677068  4.453202 -0.356442  61.649318 -13.856929
 ## I40  -1.276443 -0.317668  30.801216  9.085243  0.000000  44.221136 -20.753678
@@ -456,11 +456,11 @@ Here we see that <span class="math inline">\(\beta_3\)</span> tends to be more a
 ## R350  -3.382432  32.031470</code></pre>
 <p>In this plot, a blue square indicates a positive coefficient (so increasing the parameter increases the outputs) while a red square indicates the opposite; the strength of colour indicates the strength of effect. We can see the effect of the active variables in more detail here: <code>beta1</code> and <code>epsilon</code> have an appreciable positive effect on early-time infections, while <code>beta2</code> takes over this role at later times; <code>alpha</code>, on the other hand, dampens the number of infections and recoveries as it increases. These observations accord with our expectations; increase in the transmission rates and rate of infection, while if more individuals die from the disease then fewer will be recovering.</p>
 <p>We can also look at the uncertainty of the emulators across the space. As mentioned above, <code>emulator_plot</code> can also plot the variance of a given emulator:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="constr.html#cb30-1" tabindex="-1"></a><span class="fu">emulator_plot</span>(ems_wave1<span class="sc">$</span>R40, <span class="at">plot_type =</span> <span class="st">&#39;var&#39;</span>, <span class="at">params =</span> <span class="fu">c</span>(<span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;gamma&#39;</span>))</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-27-1.png" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="constr.html#cb29-1" tabindex="-1"></a><span class="fu">emulator_plot</span>(ems_wave1<span class="sc">$</span>R40, <span class="at">plot_type =</span> <span class="st">&#39;var&#39;</span>, <span class="at">params =</span> <span class="fu">c</span>(<span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;gamma&#39;</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/em-plot-viz-1.png" style="display: block; margin: auto;" /></p>
 <p>This plot shows the presence of a training point (purple-blue area on the right) close to the chosen slice of the input space. As discussed above, by default <code>emulator_plot</code> fixes all non-shown parameters to their mid-range, but different slices can be explored, through the argument <code>fixed_vals</code>. The purple-blue area indicates that the variance is low when we are close to the training point, which is in accordance with our expectation.</p>
 <p>Now that we have taken a look at the emulator expectation and the emulator variance, we might want to compare the relative contributions of the global and the residual terms to the overall emulator expectation. This can be done simply by examining the adjusted <span class="math inline">\(R^2\)</span> of the regression hyper-surface:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="constr.html#cb31-1" tabindex="-1"></a><span class="fu">summary</span>(ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="constr.html#cb30-1" tabindex="-1"></a><span class="fu">summary</span>(ems_wave1<span class="sc">$</span>R40<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span></code></pre></div>
 <pre><code>## [1] 0.9994323</code></pre>
 <p>We see that we have an extremely high value of the adjusted <span class="math inline">\(R^2\)</span>. This means that the regression term explains most of the behaviour of the output <span class="math inline">\(R40\)</span>. In particular, the residuals contribute little to the emulator predictions. This is not surprising, considering that we are working with a relatively simple SEIRS model. When dealing with more complex models, the regression term may be able to explain the model output less well. In such cases the residuals play a more important role.</p>
 <div class="panel panel-default">
@@ -469,8 +469,8 @@ Task
 </div>
 <div class="panel-body">
 <p>Do the residuals have a greater effect if we only consider (up to) linear terms in the variables?</p>
-<p><infobutton id="displayTextunnamed-chunk-133" onclick="javascript:toggle('unnamed-chunk-133');">Show: R tip</infobutton></p>
-<div id="toggleTextunnamed-chunk-133" style="display: none">
+<p><infobutton id="displayTextunnamed-chunk-92" onclick="javascript:toggle('unnamed-chunk-92');">Show: R tip</infobutton></p>
+<div id="toggleTextunnamed-chunk-92" style="display: none">
 <div class="panel panel-default">
 <div class="panel-body">
 <p>The <code>emulator_from_data</code> function allows us to specify the order of polynomial fitted using the <code>order</code> argument. The default is <code>emulator_from_data(..., order = 2)</code>.</p>
@@ -479,19 +479,19 @@ Task
 </div>
 </div>
 </div>
-<button id="displayTextunnamed-chunk-30" onclick="javascript:toggle(&#39;unnamed-chunk-30&#39;);">
+<button id="displayTextunnamed-chunk-15" onclick="javascript:toggle(&#39;unnamed-chunk-15&#39;);">
 Show: Solution
 </button>
-<div id="toggleTextunnamed-chunk-30" style="display: none">
+<div id="toggleTextunnamed-chunk-15" style="display: none">
 <div class="panel panel-default">
 <div class="panel-heading panel-heading1">
 Solution
 </div>
 <div class="panel-body">
 <p>We could train emulators to each output, but let us just focus on the recovered individuals at <span class="math inline">\(t=40\)</span> here.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="constr.html#cb33-1" tabindex="-1"></a>linear_r40_em <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(training, <span class="fu">c</span>(<span class="st">&#39;R40&#39;</span>), ranges, <span class="at">order =</span> <span class="dv">1</span>,</span>
-<span id="cb33-2"><a href="constr.html#cb33-2" tabindex="-1"></a>                                    <span class="at">specified_priors =</span> <span class="fu">list</span>(<span class="at">hyper_p =</span> <span class="fu">c</span>(<span class="fl">0.55</span>)))<span class="sc">$</span>R40</span>
-<span id="cb33-3"><a href="constr.html#cb33-3" tabindex="-1"></a><span class="fu">summary</span>(linear_r40_em<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="constr.html#cb32-1" tabindex="-1"></a>linear_r40_em <span class="ot">&lt;-</span> <span class="fu">emulator_from_data</span>(training, <span class="fu">c</span>(<span class="st">&#39;R40&#39;</span>), ranges, <span class="at">order =</span> <span class="dv">1</span>,</span>
+<span id="cb32-2"><a href="constr.html#cb32-2" tabindex="-1"></a>                                    <span class="at">specified_priors =</span> <span class="fu">list</span>(<span class="at">hyper_p =</span> <span class="fu">c</span>(<span class="fl">0.55</span>)))<span class="sc">$</span>R40</span>
+<span id="cb32-3"><a href="constr.html#cb32-3" tabindex="-1"></a><span class="fu">summary</span>(linear_r40_em<span class="sc">$</span>model)<span class="sc">$</span>adj.r.squared</span></code></pre></div>
 <pre><code>## [1] 0.9733467</code></pre>
 We can see that the adjusted <span class="math inline">\(R^2\)</span> has decreased, but is still high; in some circumstances we might therefore choose to use the linear emulators as they use fewer terms to fit to the data without a substantial reduction in accuracy.
 </div>
